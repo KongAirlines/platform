@@ -3,34 +3,36 @@ name: API Specification Conformance
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited, ready_for_review]
-    paths:
-      - "konnect/**/openapi.yaml"
 
 jobs:
   lint-oas:
     runs-on: ubuntu-latest
     steps:
+
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Collect modified Spec files
-        run: |
-          # Find changed openapi.yaml files and join them into a space-separated string
-          CHANGED_SPEC_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep 'openapi.yaml' || true)
-          CHANGED_SPEC_FILES=$(echo $CHANGED_SPEC_FILES | tr '\n' ' ')
-          echo "changed_spec_files=${CHANGED_SPEC_FILES}" >> $GITHUB_ENV
-        shell: bash
+      - name: Get changed oas files
+        id: changed-oas-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            konnect/**/openapi.yaml
 
-      - name: Setup deck
+      - name: Setup decK
+        if: steps.changed-oas-files.outputs.any_changed == 'true'
         uses: kong/setup-deck@v1
         with:
           deck-version: '1.42.0'
           wrapper: false
 
       - name: Lint Spec files
+        if: steps.changed-oas-files.outputs.any_changed == 'true'
+        env:
+          CHANGED_OAS_FILES: ${{ steps.changed-oas-files.outputs.all_changed_files }}
         run: |
-          for FILE in ${{ env.changed_spec_files }}; do
+          for FILE in ${CHANGED_OAS_FILES}; do
             deck file lint -s "$FILE" konnect/oas-file-rules.yaml
           done
