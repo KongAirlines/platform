@@ -1,10 +1,10 @@
 name: Spec To decK
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
+      - test-actions
     paths:
       - "konnect/**/openapi.yaml"
 
@@ -14,38 +14,36 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-      - name: Collect modified OAS files
+      - name: Collect modified Spec files
         id: changed_specs
         run: |
-          CHANGED_SPECS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'openapi.yaml' || true)
-          echo "changed_specs=$CHANGED_SPECS" >> $GITHUB_ENV
-          echo "$CHANGED_SPECS"
+          echo "event: ${{ github.event_name }}"
+          echo "sha: ${{ github.sha }}"
+          echo "before: ${{ github.event.before }}"
+          CHANGED_SPEC_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'openapi.yaml' || true)
+          echo "changed_spec_files=$CHANGED_SPEC_FILES" >> $GITHUB_ENV
+          echo "$CHANGED_SPEC_FILES"
 
-      - name: Setup decK
+      - name: Setup deck
         uses: kong/setup-deck@v1
         with:
-          deck_version: 1.42.0
+          deck-version: '1.42.0'
           wrapper: false
 
-      - name: Convert specs to decK configuration
-        if: env.changed_specs != '' 
+      - name: Convert Spec files to Kong Gateway Configuration
+        if: ${{ env.changed_spec_files != '' }}
         run: |
-          for spec in $CHANGED_SPECS; do
-            deck file openapi2kong "$spec" -o $(dirname $spec)/kong.yaml
+          deck version
+          for FILE in "$changed_spec_files"; do
+            OUTPUT_FILE=$(dirname "$FILE")/kong.yaml
+            deck file openapi2kong -s "$FILE" -o "$OUTPUT_FILE"
+            echo "Converted $FILE to $OUTPUT_FILE"
           done
 
-      - name: Upload Artifacts
-        # Artifacts are the files that are built along the way of the pipeline but are not committed to the repo
-        uses: actions/upload-artifact@v3
-        with:
-          name: kong-configurations
-          path: .github/artifacts/kong/*.yaml
-
       - name: Create PR for changed Kong Gateway Configuration
-        # The only file that should be changed for this PR is platform/kong/.generated/kong.yaml
         uses: peter-evans/create-pull-request@v5
         with:
           title: Stage Kong Gateway Configuration
-
-
