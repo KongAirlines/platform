@@ -1,4 +1,4 @@
-name: Spec To decK
+name: Convert API Spec -> Kong GW Config
 
 on:
   push:

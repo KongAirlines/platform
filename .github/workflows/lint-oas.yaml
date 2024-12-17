@@ -7,7 +7,7 @@ on:
       - "konnect/**/openapi.yaml"
 
 jobs:
-  lint:
+  lint-oas:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository

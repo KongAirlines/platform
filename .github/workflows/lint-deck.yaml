@@ -1,4 +1,4 @@
-name: Kong API Configuration Conformance
+name: Kong GW Config Conformance
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
       - "konnect/**/kong.yaml"
 
 jobs:
-  lint:
+  lint-deck:
     runs-on: ubuntu-latest
     steps:
       - name: Dump GitHub context
