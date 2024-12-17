@@ -19,8 +19,15 @@ jobs:
 
       - name: Collect modified Spec files
         run: |
+          # Find changed openapi.yaml files and join them into a space-separated string
           CHANGED_SPEC_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'openapi.yaml' || true)
-          echo "changed_spec_files=$CHANGED_SPEC_FILES" >> $GITHUB_ENV
+          CHANGED_SPEC_FILES=$(echo $CHANGED_SPEC_FILES | tr '\n' ' ')
+          if [[ -z "$CHANGED_SPEC_FILES" ]]; then
+            echo "No modified openapi.yaml files found. Exiting workflow."
+            exit 0
+          fi
+          echo "changed_spec_files=${CHANGED_SPEC_FILES}" >> $GITHUB_ENV
+        shell: bash
 
       - name: Setup deck
         uses: kong/setup-deck@v1
@@ -31,7 +38,7 @@ jobs:
       - name: Convert Spec files to Kong Gateway Configuration
         if: ${{ env.changed_spec_files != '' }}
         run: |
-          for FILE in "$changed_spec_files"; do
+          for FILE in ${{ env.changed_spec_files }}; do
             OUTPUT_FILE=$(dirname "$FILE")/kong.yaml
             deck file openapi2kong -s "$FILE" -o "$OUTPUT_FILE"
             echo "Converted $FILE to $OUTPUT_FILE"
