@@ -3,7 +3,7 @@
 openapi: 3.0.0
 
 info:
-  description: KongAir Flights service provides the scheduled flights for KongAir, foo
+  description: KongAir Flights service provides the scheduled flights for KongAir
   version: 0.1.0
   title: Flights Service
 
@@ -15,7 +15,7 @@ paths:
   /health:
     get:
       summary: Health check endpoint for Kubernetes
-      description: Endpoint that returns the service health status.
+      description: Endpoint that returns the service health status
       responses:
         '200':
           description: Service is healthy
