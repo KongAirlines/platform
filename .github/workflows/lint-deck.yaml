@@ -1,4 +1,4 @@
-name: decK Lint
+name: Kong API Configuration Conformance
 
 on:
   pull_request:
@@ -28,7 +28,6 @@ jobs:
 
       - name: Collect modified decK files
         run: |
-          git fetch origin ${{ github.event.pull_request.base.ref }}:${{ github.event.pull_request.base.ref }}
           CHANGED_DECK_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep 'kong.yaml')
           CHANGED_DECK_FILES=$(echo $CHANGED_DECK_FILES | tr '\n' ' ')
           echo "changed_deck_files=$CHANGED_DECK_FILES" >> $GITHUB_ENV
