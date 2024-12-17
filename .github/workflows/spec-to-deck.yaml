@@ -9,7 +9,7 @@ on:
       - "konnect/**/openapi.yaml"
 
 jobs:
-  tbd:
+  convert-specs-to-deck:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
