@@ -37,5 +37,5 @@ jobs:
         if: ${{ env.changed_deck_files != '' }}
         run: |
           for FILE in $changed_deck_files; do
-            deck file lint -f "$FILE" 
+            deck file lint -s "$FILE" konnect/deck-file-rules.yaml 
           done
