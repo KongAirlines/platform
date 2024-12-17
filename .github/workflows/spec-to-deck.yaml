@@ -20,11 +20,11 @@ jobs:
       - name: Collect modified OAS files
         id: changed_specs
         run: |
-          echo ${{ github.event_name }}
-          echo ${{ github.sha }}
-          echo ${{ github.event.base_ref }}
-          echo ${{ github.event.before }}
-          echo ${{ github.event.pull_request.base.ref }}
-          echo ${{ github.event.pull_request.base.sha }}
-          git diff ${{github.event.before}} ${{github.sha}}
+          echo "event: ${{ github.event_name }}"
+          echo "sha: ${{ github.sha }}"
+          echo "before: ${{ github.event.before }}"
+          CHANGED_SPEC_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'openapi.yaml' || true)
+          echo "changed_spec_files=$CHANGED_SPEC_FILES" >> $GITHUB_ENV
+          echo "$CHANGED_SPEC_FILES"
+
 
