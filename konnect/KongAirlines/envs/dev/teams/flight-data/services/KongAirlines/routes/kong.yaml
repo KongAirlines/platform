@@ -1,0 +1,42 @@
+_format_version: "3.0"
+services:
+- host: api.kong-air.com
+  id: 5bbc0ad8-3b7c-5dfe-a676-b28f30523a6f
+  name: routes-service
+  path: /
+  plugins: []
+  port: 443
+  protocol: https
+  routes:
+  - id: 4da7a5e5-9e69-59af-a6c3-46a675c5bac6
+    methods:
+    - GET
+    name: routes-service_health_get
+    paths:
+    - ~/health$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  - id: 89f28ad3-74db-5149-8fa5-f7fffbfda79c
+    methods:
+    - GET
+    name: routes-service_get-routes
+    paths:
+    - ~/routes$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  - id: 831bf89a-08be-5dbd-bcd2-aa2348d784d3
+    methods:
+    - GET
+    name: routes-service_get-route
+    paths:
+    - ~/routes/(?<id>[^#?/]+)$
+    plugins: []
+    regex_priority: 100
+    strip_path: false
+    tags: []
+  tags: []
+upstreams: []
