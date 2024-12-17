@@ -1,7 +1,6 @@
 name: Spec To decK
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
