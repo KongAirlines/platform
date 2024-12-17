@@ -30,11 +30,12 @@ jobs:
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}:${{ github.event.pull_request.base.ref }}
           CHANGED_DECK_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep 'kong.yaml')
+          CHANGED_DECK_FILES=$(echo $CHANGED_DECK_FILES | tr '\n' ' ')
           echo "changed_deck_files=$CHANGED_DECK_FILES" >> $GITHUB_ENV
 
       - name: Lint decK files 
         if: ${{ env.changed_deck_files != '' }}
         run: |
-          for FILE in "$changed_deck_files"; do
+          for FILE in $changed_deck_files; do
             deck lint -f "$FILE" 
           done
