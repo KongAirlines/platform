@@ -17,8 +17,8 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@v3
-        #with:
-        #  fetch-depth: 0
+        with:
+          fetch-depth: 0
 
       - name: Setup deck
         uses: kong/setup-deck@v1
