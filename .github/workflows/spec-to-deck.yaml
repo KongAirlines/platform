@@ -36,9 +36,10 @@ jobs:
       - name: Process changed Spec files
         if: ${{ env.changed_spec_files != '' }}
         run: |
-          for FILE in $changed_spec_files; do
+          for FILE in "$changed_spec_files"; do
             OUTPUT_FILE=$(dirname "$FILE")/kong.yaml
-            deck file openapi2kong "$FILE" -o "$OUTPUT_FILE"
+            deck file version
+            deck file openapi2kong -s "$FILE" -o "$OUTPUT_FILE"
             echo "$OUTPUT_FILE"
             cat "$OUTPUT_FILE"
           done
