@@ -21,7 +21,7 @@ jobs:
 
       - name: Collect modified decK files
         run: |
-          CHANGED_DECK_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'deck.yaml' || true)
+          CHANGED_DECK_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'kong.yaml')
           echo "changed_deck_files=$CHANGED_DECK_FILES" >> $GITHUB_ENV
 
       - name: Lint decK files 
