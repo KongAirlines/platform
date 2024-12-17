@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Collect modified OAS files
         id: changed_specs
@@ -25,34 +27,5 @@ jobs:
           echo ${{ github.event.before }}
           echo ${{ github.event.pull_request.base.ref }}
           echo ${{ github.event.pull_request.base.sha }}
-          CHANGED_SPECS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'openapi.yaml' || true)
-          echo "changed_specs=$CHANGED_SPECS" >> $GITHUB_ENV
-          echo "$CHANGED_SPECS"
-
-          #      - name: Setup decK
-          #        uses: kong/setup-deck@v1
-          #        with:
-          #          deck_version: 1.42.0
-          #          wrapper: false
-          #
-          #      - name: Convert specs to decK configuration
-          #        if: env.changed_specs != '' 
-          #        run: |
-          #          for spec in $CHANGED_SPECS; do
-          #            deck file openapi2kong "$spec" -o $(dirname $spec)/kong.yaml
-          #          done
-          #
-          #      - name: Upload Artifacts
-          #        # Artifacts are the files that are built along the way of the pipeline but are not committed to the repo
-          #        uses: actions/upload-artifact@v3
-          #        with:
-          #          name: kong-configurations
-          #          path: .github/artifacts/kong/*.yaml
-          #
-          #      - name: Create PR for changed Kong Gateway Configuration
-          #        # The only file that should be changed for this PR is platform/kong/.generated/kong.yaml
-          #        uses: peter-evans/create-pull-request@v5
-          #        with:
-          #          title: Stage Kong Gateway Configuration
-          #
+          git diff ${{github.event.before}} ${{github.sha}}
 
