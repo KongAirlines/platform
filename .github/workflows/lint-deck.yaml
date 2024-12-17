@@ -37,5 +37,5 @@ jobs:
         if: ${{ env.changed_deck_files != '' }}
         run: |
           for FILE in $changed_deck_files; do
-            deck lint -f "$FILE" 
+            deck file lint -f "$FILE" 
           done
