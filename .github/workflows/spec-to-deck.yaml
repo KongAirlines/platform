@@ -14,18 +14,11 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Collect modified Spec files
-        id: changed_specs
         run: |
-          echo "event: ${{ github.event_name }}"
-          echo "sha: ${{ github.sha }}"
-          echo "before: ${{ github.event.before }}"
           CHANGED_SPEC_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'openapi.yaml' || true)
           echo "changed_spec_files=$CHANGED_SPEC_FILES" >> $GITHUB_ENV
-          echo "$CHANGED_SPEC_FILES"
 
       - name: Setup deck
         uses: kong/setup-deck@v1
@@ -36,7 +29,6 @@ jobs:
       - name: Convert Spec files to Kong Gateway Configuration
         if: ${{ env.changed_spec_files != '' }}
         run: |
-          deck version
           for FILE in "$changed_spec_files"; do
             OUTPUT_FILE=$(dirname "$FILE")/kong.yaml
             deck file openapi2kong -s "$FILE" -o "$OUTPUT_FILE"
