@@ -33,15 +33,17 @@ jobs:
           deck-version: '1.42.0'
           wrapper: false
 
-      - name: Process changed Spec files
+      - name: Convert Spec files to Kong Gateway Configuration
         if: ${{ env.changed_spec_files != '' }}
         run: |
+          deck version
           for FILE in "$changed_spec_files"; do
             OUTPUT_FILE=$(dirname "$FILE")/kong.yaml
-            deck file version
             deck file openapi2kong -s "$FILE" -o "$OUTPUT_FILE"
-            echo "$OUTPUT_FILE"
-            cat "$OUTPUT_FILE"
+            echo "Converted $FILE to $OUTPUT_FILE"
           done
 
-
+      - name: Create PR for changed Kong Gateway Configuration
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: Stage Kong Gateway Configuration
