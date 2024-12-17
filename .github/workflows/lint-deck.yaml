@@ -17,6 +17,8 @@ jobs:
 
       - name: Checkout Repository
         uses: actions/checkout@v3
+        #with:
+        #  fetch-depth: 0
 
       - name: Setup deck
         uses: kong/setup-deck@v1
@@ -26,7 +28,8 @@ jobs:
 
       - name: Collect modified decK files
         run: |
-          CHANGED_DECK_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep 'kong.yaml')
+          git fetch origin ${{ github.event.pull_request.base.ref }}:${{ github.event.pull_request.base.ref }}
+          CHANGED_DECK_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep 'kong.yaml')
           echo "changed_deck_files=$CHANGED_DECK_FILES" >> $GITHUB_ENV
 
       - name: Lint decK files 
