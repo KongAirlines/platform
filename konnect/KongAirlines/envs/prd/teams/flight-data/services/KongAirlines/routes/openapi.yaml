@@ -8,9 +8,9 @@ info:
 
 tags:
   - name: Health
-    description: Endpoints for checking service health.
+    description: Endpoints for checking service health
   - name: Routes
-    description: Endpoints related to KongAir flight routes.
+    description: Endpoints related to KongAir flight routes
 
 servers:
   - url: https://api.kong-air.com
