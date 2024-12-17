@@ -3,8 +3,8 @@ name: Kong GW Config Conformance
 on:
   pull_request:
     types: [ opened, synchronize, reopened, edited, ready_for_review ]
-    branches: 
-      - convert-specs-to-deck # This is the branch where the spec-to-deck.yaml workflow will push
+    #branches: 
+    #  - convert-specs-to-deck # This is the branch where the spec-to-deck.yaml workflow will push
     paths:
       - "konnect/**/kong.yaml"
 
