@@ -38,9 +38,9 @@ jobs:
         run: |
           for FILE in $changed_spec_files; do
             OUTPUT_FILE=$(dirname "$FILE")/kong.yaml
-            deck file openapi2kong $FILE -o $OUTPUT_FILE 
-            echo $OUTPUT_FILE
-            cat $OUTPUT_FILE
+            deck file openapi2kong "$FILE" -o "$OUTPUT_FILE"
+            echo "$OUTPUT_FILE"
+            cat "$OUTPUT_FILE"
           done
 
 
