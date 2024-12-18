@@ -1,7 +1,7 @@
 _format_version: "3.0"
 services:
 - host: api.kong-air.com
-  id: 3cef4d36-9c39-5ac2-9d9f-190d8ea8a252
+  id: 6cef4d36-9c39-5ac2-9d9f-190d8ea8a252
   name: flights-service
   path: /
   plugins: []
