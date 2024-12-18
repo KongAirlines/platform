@@ -58,6 +58,12 @@ jobs:
           echo "team-name=$TEAM_NAME" >> $GITHUB_OUTPUT
           echo "env-name=$ENV_NAME" >> $GITHUB_OUTPUT
 
+      - name: Setup deck
+        uses: kong/setup-deck@v1
+        with:
+          deck-version: '1.42.0'
+          wrapper: false
+
       - name: Run deck diff
         id: deck-diff
         env:
