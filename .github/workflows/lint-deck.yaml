@@ -3,8 +3,6 @@ name: Konnect - GW Config Conformance
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited, ready_for_review]
-    branches: 
-      - konnect-convert-specs-to-deck
 
 jobs:
   lint-deck:
