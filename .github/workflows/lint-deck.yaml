@@ -21,7 +21,7 @@ jobs:
         uses: tj-actions/changed-files@v45
         with:
           files: |
-            konnect/**/kong.yaml
+            konnect/**/kong-from-oas.yaml
 
       - name: Setup deck
         uses: kong/setup-deck@v1
