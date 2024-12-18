@@ -1,4 +1,4 @@
-name: Konnect - Stage Changes for Kong Gateway Deployment
+name: Konnect - Stage Kong Gateway diff
 
 on:
   push:
