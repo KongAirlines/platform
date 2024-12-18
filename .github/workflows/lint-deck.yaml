@@ -1,4 +1,4 @@
-name: Konnect - GW Config Conformance
+name: Konnect - decK conformance
 
 on:
   pull_request:

@@ -1,0 +1,87 @@
+name: Konnect - Stage Changes for Kong Gateway Deployment
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "konnect/**/kong.yaml"
+
+jobs:
+  collect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.collect.outputs.files }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Collect modified kong.yaml files
+        id: collect
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            konnect/**/kong.yaml
+
+  process-changes:
+    needs: collect-changes
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        file: ${{ fromJson(needs.collect-changes.outputs.files) }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Extract context from file path
+        id: extract-context
+        run: |
+          FILE_PATH="${{ matrix.file }}"
+          echo "Processing file: $FILE_PATH"
+
+          # Extract team and environment names from the file path
+          TEAM_NAME=$(echo "$FILE_PATH" | grep -oP 'teams/[^/]+' | cut -d '/' -f2)
+          ENV_NAME=$(echo "$FILE_PATH" | grep -oP 'envs/[^/]+' | cut -d '/' -f2)
+
+          if [[ -z "$TEAM_NAME" || -z "$ENV_NAME" ]]; then
+            echo "Could not extract team or environment name from $FILE_PATH"
+            exit 1
+          fi
+
+          echo "team-name=$TEAM_NAME" >> $GITHUB_OUTPUT
+          echo "env-name=$ENV_NAME" >> $GITHUB_OUTPUT
+
+      - name: Run deck diff
+        id: deck-diff
+        env:
+          KONNECT_PAT: ${{ secrets.KONNECT_PAT }}
+        run: |
+          FILE_PATH="${{ matrix.file }}"
+          TEAM_NAME="${{ steps.extract-context.outputs.team-name }}"
+          ENV_NAME="${{ steps.extract-context.outputs.env-name }}"
+
+          # Generate the control plane name
+          CONTROL_PLANE_NAME="${TEAM_NAME}-${ENV_NAME}"
+          echo "Control Plane Name: $CONTROL_PLANE_NAME"
+
+          # Generate a unique EOF marker for multi-line diff output handling
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "DIFF<<$EOF" >> $GITHUB_ENV
+          deck diff --select-tag platform-repo-managed -s "$FILE_PATH" --konnect-control-plane-name "$CONTROL_PLANE_NAME" --konnect-token ${{ secrets.KONNECT_PAT }} >> $GITHUB_ENV
+          echo "$EOF" >> $GITHUB_ENV
+
+      - name: Stage diff in PR 
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: "[Konnect] [${{ steps.extract-context.outputs.team-name }}-${{ steps.extract-context.outputs.env-name }}] - Staged Changes for Kong Gateway Config Deployment"
+          branch: "${{ steps.extract-context.outputs.env-name }}/kong-${{ steps.extract-context.outputs.team-name }}"
+          labels: "${{ steps.extract-context.outputs.env-name }},kong"
+          body: |
+            Merging this PR will result in the following changes deployed to 
+            **${{ steps.extract-context.outputs.env-name }}** for **${{ steps.extract-context.outputs.team-name }}** team.
+
+            (Konnect Control Plane: **${{ steps.extract-context.outputs.team-name }}-${{ steps.extract-context.outputs.env-name }}**):
+            
+            ```
+            ${{ env.DIFF }}
+            ```
