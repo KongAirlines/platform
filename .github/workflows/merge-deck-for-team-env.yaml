@@ -1,0 +1,83 @@
+name: Konnect - Merge GW Config per Team Env
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "konnect/**/kong-from-oas.yaml"
+
+jobs:
+  gather-and-process:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Collect modified deck files
+        id: changed-oas-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            konnect/**/kong-from-oas.yaml
+
+      - name: Setup deck
+        if: steps.changed-oas-files.outputs.any_changed == 'true'
+        uses: kong/setup-deck@v1
+        with:
+          deck-version: '1.42.0'
+          wrapper: false
+
+      - name: Merge kong-from-oas.yaml files
+        if: steps.changed-oas-files.outputs.any_changed == 'true'
+        env:
+          CHANGED_FILES: ${{ steps.changed-oas-files.outputs.all_changed_files }}
+        run: |
+          # Base directory for konnect
+          BASE_DIR=${GITHUB_WORKSPACE}/konnect
+
+          # Convert changed files to an array
+          IFS=',' read -ra FILES <<< "$CHANGED_FILES"
+
+          # Create a set of processed directories
+          declare -A PROCESSED_DIRS
+
+          for FILE in "${FILES[@]}"; do
+            echo "Processing changed file: $FILE"
+
+            # Determine the environment and team path
+            ENV_DIR=$(dirname "$FILE" | grep -oP 'konnect/[^/]*/envs/[^/]*/teams/[^/]*')
+            if [[ -z "$ENV_DIR" ]]; then
+              echo "Skipping file outside expected structure: $FILE"
+              continue
+            fi
+
+            # Prevent duplicate processing of the same directory
+            if [[ -n "${PROCESSED_DIRS[$ENV_DIR]}" ]]; then
+              echo "Directory already processed: $ENV_DIR"
+              continue
+            fi
+            PROCESSED_DIRS[$ENV_DIR]=1
+
+            echo "Gathering files in directory: $ENV_DIR"
+
+            # Find all `kong-from-oas.yaml` files in the relevant directory
+            KONG_FILES=$(find "$BASE_DIR/$ENV_DIR" -name 'kong-from-oas.yaml')
+
+            # Skip if no files are found
+            if [[ -z "$KONG_FILES" ]]; then
+              echo "No kong-from-oas.yaml files found in $ENV_DIR."
+              continue
+            fi
+
+            # Prepare output file
+            OUTPUT_FILE="$BASE_DIR/$ENV_DIR/merged-kong-from-oas.yaml"
+            
+            # Run the deck merge command
+            echo "Running deck file merge..."
+            deck file merge $KONG_FILES -o "$OUTPUT_FILE"
+
+            echo "Merged files written to: $OUTPUT_FILE"
+          done
+
