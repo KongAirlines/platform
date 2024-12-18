@@ -39,6 +39,7 @@ jobs:
           for FILE in ${CHANGED_OAS_FILES}; do
             OUTPUT_FILE=$(dirname "$FILE")/kong-from-oas.yaml
             deck file openapi2kong -s "$FILE" -o "$OUTPUT_FILE"
+            git add "$OUTPUT_FILE"
             echo "Converted $FILE to $OUTPUT_FILE"
           done
 
