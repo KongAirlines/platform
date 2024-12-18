@@ -34,9 +34,6 @@ jobs:
         env:
           CHANGED_FILES: ${{ steps.changed-deck-files.outputs.all_changed_files }}
         run: |
-          # Base directory for konnect
-          BASE_DIR=${GITHUB_WORKSPACE}/konnect
-
           # Convert changed files to an array (space-delimited)
           read -ra FILES <<< "$CHANGED_FILES"
 
@@ -63,7 +60,7 @@ jobs:
             echo "Gathering files in directory: $ENV_DIR"
 
             # Find all `kong-from-oas.yaml` files in the relevant directory
-            KONG_FILES=$(find "$BASE_DIR/$ENV_DIR" -name 'kong-from-oas.yaml')
+            KONG_FILES=$(find "$ENV_DIR" -name 'kong-from-oas.yaml')
 
             # Skip if no files are found
             if [[ -z "$KONG_FILES" ]]; then
@@ -72,7 +69,7 @@ jobs:
             fi
 
             # Prepare output file
-            OUTPUT_FILE="$BASE_DIR/$ENV_DIR/kong.yaml"
+            OUTPUT_FILE="$ENV_DIR/kong.yaml"
             
             # Run the deck merge command
             echo "Running deck file merge with input files: $KONG_FILES"
