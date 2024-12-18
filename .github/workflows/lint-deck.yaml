@@ -1,36 +1,27 @@
-name: Kong GW Config Conformance
+name: Konnect - GW Config Conformance
 
 on:
   pull_request:
-    types: [ opened, synchronize, reopened, edited, ready_for_review ]
+    types: [opened, synchronize, reopened, edited, ready_for_review]
     branches: 
-      - convert-specs-to-deck # This is a well known branch where the spec-to-deck.yaml workflow will push
-    #paths:
-    #  - "konnect/**/kong.yaml"
+      - konnect-convert-specs-to-deck
 
 jobs:
   lint-deck:
     runs-on: ubuntu-latest
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT"
 
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Collect modified decK files
-        run: |
-          CHANGED_DECK_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep 'kong.yaml')
-          CHANGED_DECK_FILES=$(echo $CHANGED_DECK_FILES | tr '\n' ' ')
-          if [[ -z "$CHANGED_DECK_FILES" ]]; then
-            echo "No modified deck.yaml files found. Exiting workflow."
-            exit 0
-          fi
-          echo "changed_deck_files=$CHANGED_DECK_FILES" >> $GITHUB_ENV
+      - name: Get changed deck files
+        id: changed-deck-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            konnect/**/kong.yaml
 
       - name: Setup deck
         uses: kong/setup-deck@v1
@@ -39,8 +30,10 @@ jobs:
           wrapper: false
 
       - name: Lint decK files 
-        if: ${{ env.changed_deck_files != '' }}
+        if: steps.changed-deck-files.outputs.any_changed == 'true' 
+        env:
+          CHANGED_DECK_FILES: ${{ steps.changed-deck-files.outputs.all_changed_files }}
         run: |
-          for FILE in $changed_deck_files; do
+          for FILE in ${CHANGED_DECK_FILES}; do
             deck file lint -s "$FILE" konnect/deck-file-rules.yaml
           done

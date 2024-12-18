@@ -1,4 +1,4 @@
-name: API Specification Conformance
+name: Konnect - OAS Conformance
 
 on:
   pull_request:
