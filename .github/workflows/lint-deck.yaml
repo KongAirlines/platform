@@ -5,7 +5,9 @@ on:
     types: [opened, synchronize, reopened, edited, ready_for_review]
 
 jobs:
-  lint-deck:
+  run_if:
+    if: github.head_ref == 'konnect-convert-specs-to-deck'
+  lint-deck: 
     runs-on: ubuntu-latest
     steps:
 
