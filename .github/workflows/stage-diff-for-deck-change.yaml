@@ -9,26 +9,33 @@ on:
 
 jobs:
   collect-changes:
+    name: Collect changed decK files
     runs-on: ubuntu-latest
     outputs:
-      files: ${{ steps.collect.outputs.files }}
+      matrix: ${{ steps.changed-files.outputs.all_changed_files }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Collect modified kong.yaml files
-        id: collect
+        id: changed-files
         uses: tj-actions/changed-files@v45
         with:
+          matrix: true
           files: |
             konnect/**/kong.yaml
+      - name: List all changed files
+        run: echo '${{ steps.changed-files.outputs.all_changed_files }}'
 
   process-changes:
-    needs: collect-changes
+    name: Calculate diff for changed decK files
+    needs: [collect-changes]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        file: ${{ fromJson(needs.collect-changes.outputs.files) }}
+        file: ${{ fromJson(needs.collect-changes.outputs.matrix) }}
+      max-parallel: 1
+      fail-fast: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
