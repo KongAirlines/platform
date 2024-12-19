@@ -42,6 +42,7 @@ jobs:
           MODIFIED_FILES=()
 
           for FILE in $CHANGED_FILES; do
+            echo "Processing file: $FILE"
             TEAM=$(echo "$FILE" | grep -oP 'teams/[^/]+' | cut -d '/' -f2)
             ENV=$(echo "$FILE" | grep -oP 'envs/[^/]+' | cut -d '/' -f2)
             ENV_DIR=$(dirname "$FILE" | grep -oP 'konnect/[^/]*/envs/[^/]*/teams/[^/]*')
@@ -70,6 +71,8 @@ jobs:
                     MODIFIED_FILES+=("$OUTPUT_FILE")
                     OUTPUT_MATRIX+=("{\"team\":\"$TEAM\",\"env\":\"$ENV\",\"file\":\"$OUTPUT_FILE\"}")
                   fi
+                else
+                  echo "No kong-from-oas.yaml files found under: $ENV_DIR"
                 fi
               else
                 echo "Skipping already processed team-environment: $KEY"
