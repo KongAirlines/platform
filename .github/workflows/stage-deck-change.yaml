@@ -57,12 +57,6 @@ jobs:
                 if [[ -n "$KONG_FILES" ]]; then
                   deck file merge $KONG_FILES -o "$OUTPUT_FILE"
                   echo "Merged file written to: $OUTPUT_FILE"
-
-                  # Upload artifact directly
-                  ARTIFACT_NAME="${TEAM}-${ENV}-kong"
-                  echo "Uploading artifact: $ARTIFACT_NAME"
-                  gh-actions-upload-artifact -name "$ARTIFACT_NAME" -path "$OUTPUT_FILE"
-
                   OUTPUT_MATRIX+=("{\"team\":\"$TEAM\",\"env\":\"$ENV\",\"file\":\"$OUTPUT_FILE\"}")
                 fi
               else
@@ -73,6 +67,12 @@ jobs:
 
           MATRIX=$(printf '[%s]' "$(printf '%s,' "${OUTPUT_MATRIX[@]}" | sed 's/,$//')")
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: kong-merged-files
+          path: konnect/**/kong.yaml
 
   process-changes:
     name: Process and Stage Diffs
@@ -90,7 +90,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: ${{ matrix.context.team }}-${{ matrix.context.env }}-kong
+          name: kong-merged-files 
           path: .
 
       - name: Extract context from matrix
