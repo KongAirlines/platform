@@ -58,18 +58,28 @@ jobs:
                 KONG_FILES=$(find "$ENV_DIR" -name 'kong-from-oas.yaml')
                 if [[ -n "$KONG_FILES" ]]; then
                   deck file merge $KONG_FILES -o "$OUTPUT_FILE"
-
-                  # Check if the file is modified
+                  
                   if [[ -f "$OUTPUT_FILE" ]]; then
-                    if ! git diff --quiet "$OUTPUT_FILE"; then
-                      echo "File modified: $OUTPUT_FILE"
+                    # Check if the file is tracked in Git
+                    if git ls-files --error-unmatch "$OUTPUT_FILE" &>/dev/null; then
+                      # The file is tracked, check if it changed
+                      if ! git diff --quiet "$OUTPUT_FILE"; then
+                        echo "File modified: $OUTPUT_FILE"
+                        MODIFIED_FILES+=("$OUTPUT_FILE")
+                        OUTPUT_MATRIX+=("{\"team\":\"$TEAM\",\"env\":\"$ENV\",\"file\":\"$OUTPUT_FILE\"}")
+                      else
+                        echo "No changes detected in tracked file: $OUTPUT_FILE"
+                        # No action needed if you only care about changed or newly created files
+                      fi
+                    else
+                      # The file is not tracked, so it's newly created
+                      echo "File created: $OUTPUT_FILE"
                       MODIFIED_FILES+=("$OUTPUT_FILE")
                       OUTPUT_MATRIX+=("{\"team\":\"$TEAM\",\"env\":\"$ENV\",\"file\":\"$OUTPUT_FILE\"}")
                     fi
                   else
-                    echo "File created: $OUTPUT_FILE"
-                    MODIFIED_FILES+=("$OUTPUT_FILE")
-                    OUTPUT_MATRIX+=("{\"team\":\"$TEAM\",\"env\":\"$ENV\",\"file\":\"$OUTPUT_FILE\"}")
+                    echo "Failed to create merged file: $OUTPUT_FILE"
+                    exit 1
                   fi
                 else
                   echo "No kong-from-oas.yaml files found under: $ENV_DIR"
