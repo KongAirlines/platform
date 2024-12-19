@@ -8,20 +8,30 @@ services:
   port: 443
   protocol: https
   routes:
-  - id: 89f28ad3-74db-5149-8fa5-f7fffbfda79c
+  - id: 2cd9db45-c042-57cc-8cca-65284bd70ba1
     methods:
     - GET
-    name: routes-service_get-routes
+    name: routes-service_healthcheck
+    paths:
+    - ~/health$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  - id: 819c0a1c-b132-504d-8f46-ee3eb72832b1
+    methods:
+    - GET
+    name: routes-service_getallroutes
     paths:
     - ~/routes$
     plugins: []
     regex_priority: 200
     strip_path: false
     tags: []
-  - id: 831bf89a-08be-5dbd-bcd2-aa2348d784d3
+  - id: 090c7ffa-a1e7-5cca-9672-f71d2aefd295
     methods:
     - GET
-    name: routes-service_get-route
+    name: routes-service_getroutebyid
     paths:
     - ~/routes/(?<id>[^#?/]+)$
     plugins: []
