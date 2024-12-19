@@ -58,12 +58,6 @@ jobs:
                   deck file merge $KONG_FILES -o "$OUTPUT_FILE"
                   echo "Merged files written to: $OUTPUT_FILE"
                   OUTPUT_MATRIX+=("{\"team\":\"$TEAM\",\"env\":\"$ENV\",\"file\":\"$OUTPUT_FILE\"}")
-                  
-                  # Save the file as an artifact
-                  ARTIFACT_NAME="${TEAM}-${ENV}-kong.yaml"
-                  echo "Uploading artifact: $ARTIFACT_NAME"
-                  echo "::set-output name=artifact::$ARTIFACT_NAME"
-                  echo "::set-output name=output_file::$OUTPUT_FILE"
                 fi
               else
                 echo "Skipping already processed team-environment: $KEY"
@@ -72,8 +66,7 @@ jobs:
           done
 
           MATRIX=$(printf '[%s]' "$(printf '%s,' "${OUTPUT_MATRIX[@]}" | sed 's/,$//')")
-          echo "Matrix: $MATRIX"
-          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+          echo "Matrix: $MATRIX" >> $GITHUB_OUTPUT
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
