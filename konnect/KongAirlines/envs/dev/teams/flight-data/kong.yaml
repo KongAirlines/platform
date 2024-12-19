@@ -1,7 +1,7 @@
 _format_version: "3.0"
 services:
 - host: api.kong-air.com
-  id: 3bbc0ad8-3b7c-5dfe-a676-b28f30523a6f
+  id: 9bbc0ad8-3b7c-5dfe-a676-b28f30523a6f
   name: routes-service
   path: /
   plugins: []
@@ -37,7 +37,7 @@ services:
   port: 443
   protocol: https
   routes:
-  - id: 7b2dbd94-ec5b-5ae8-b6d5-4c8b16ce0b06
+  - id: 3b2dbd94-ec5b-5ae8-b6d5-4c8b16ce0b06
     methods:
     - GET
     name: flights-service_get-flights
