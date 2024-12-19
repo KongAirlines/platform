@@ -1,0 +1,132 @@
+name: Konnect - Process Kong Gateway Configs
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "konnect/**/kong-from-oas.yaml"
+
+jobs:
+  merge-deck-files:
+    name: Merge `kong-from-oas.yaml` files
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.collect-context.outputs.matrix }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Collect modified files
+        id: changed-deck-files
+        uses: tj-actions/changed-files@v45
+        with:
+          files: |
+            konnect/**/kong-from-oas.yaml
+
+      - name: Setup deck
+        if: steps.changed-deck-files.outputs.any_changed == 'true'
+        uses: kong/setup-deck@v1
+        with:
+          deck-version: '1.42.0'
+          wrapper: false
+
+      - name: Merge and collect team/environment pairs
+        id: collect-context
+        run: |
+          CHANGED_FILES="${{ steps.changed-deck-files.outputs.all_changed_files }}"
+          echo "Changed files: $CHANGED_FILES"
+
+          declare -A TEAM_ENV_PAIRS
+          OUTPUT_MATRIX=()
+
+          for FILE in $CHANGED_FILES; do
+            TEAM=$(echo "$FILE" | grep -oP 'teams/[^/]+' | cut -d '/' -f2)
+            ENV=$(echo "$FILE" | grep -oP 'envs/[^/]+' | cut -d '/' -f2)
+            ENV_DIR=$(dirname "$FILE" | grep -oP 'konnect/[^/]*/envs/[^/]*/teams/[^/]*')
+
+            if [[ -n "$TEAM" && -n "$ENV" && -n "$ENV_DIR" ]]; then
+              KEY="$ENV_DIR"
+              if [[ -z "${TEAM_ENV_PAIRS[$KEY]}" ]]; then
+                TEAM_ENV_PAIRS["$KEY"]=1  # Mark this team-environment as processed
+                OUTPUT_FILE="$ENV_DIR/kong.yaml"
+                echo "Processing: Team=$TEAM, Environment=$ENV, Directory=$ENV_DIR"
+
+                # Find and merge all kong-from-oas.yaml files under this directory
+                KONG_FILES=$(find "$ENV_DIR" -name 'kong-from-oas.yaml')
+                if [[ -n "$KONG_FILES" ]]; then
+                  deck file merge $KONG_FILES -o "$OUTPUT_FILE"
+                  echo "Merged files written to: $OUTPUT_FILE"
+                  OUTPUT_MATRIX+=("{\"team\":\"$TEAM\",\"env\":\"$ENV\",\"file\":\"$OUTPUT_FILE\"}")
+                fi
+              else
+                echo "Skipping already processed team-environment: $KEY"
+              fi
+            fi
+          done
+
+          MATRIX=$(printf '[%s]' "$(printf '%s,' "${OUTPUT_MATRIX[@]}" | sed 's/,$//')")
+          echo "Matrix: $MATRIX"
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+
+  process-changes:
+    name: Process and Stage Diffs
+    needs: [merge-deck-files]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        context: ${{ fromJson(needs.merge-deck-files.outputs.matrix) }}
+      max-parallel: 1
+      fail-fast: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Extract context from matrix
+        id: extract-context
+        run: |
+          TEAM="${{ matrix.context.team }}"
+          ENV="${{ matrix.context.env }}"
+          FILE_PATH="${{ matrix.context.file }}"
+          echo "Processing: Team=$TEAM, Environment=$ENV, File=$FILE_PATH"
+          echo "team=$TEAM" >> $GITHUB_OUTPUT
+          echo "env=$ENV" >> $GITHUB_OUTPUT
+          echo "file=$FILE_PATH" >> $GITHUB_OUTPUT
+
+      - name: Setup deck
+        uses: kong/setup-deck@v1
+        with:
+          deck-version: '1.42.0'
+          wrapper: false
+
+      - name: Run deck diff
+        id: deck-diff
+        env:
+          KONNECT_PAT: ${{ secrets.KONNECT_PAT }}
+        run: |
+          TEAM="${{ steps.extract-context.outputs.team }}"
+          ENV="${{ steps.extract-context.outputs.env }}"
+          FILE_PATH="${{ steps.extract-context.outputs.file }}"
+          CONTROL_PLANE_NAME="${TEAM}-${ENV}"
+
+          # Calculate the diff
+          DIFF=$(deck gateway diff -s "$FILE_PATH" --konnect-control-plane-name "$CONTROL_PLANE_NAME" --konnect-token "$KONNECT_PAT")
+          echo "DIFF=$DIFF" >> $GITHUB_ENV
+
+      - name: Create PR for changes
+        uses: peter-evans/create-pull-request@v5
+        with:
+          title: "[Konnect] [${{ steps.extract-context.outputs.team }}-${{ steps.extract-context.outputs.env }}] - Staged Changes for Kong Gateway Config Deployment"
+          branch: "staged/${{ steps.extract-context.outputs.env }}-${{ steps.extract-context.outputs.team }}"
+          labels: "${{ steps.extract-context.outputs.env }},kong,konnect"
+          commit-message: "Updated Kong Gateway Configurations for ${{ steps.extract-context.outputs.env }}/{{ steps.extract-context.outputs.team }}"
+          body: |
+            This PR includes the following changes for **${{ steps.extract-context.outputs.team }}** in the **${{ steps.extract-context.outputs.env }}** environment.
+
+            (Konnect Control Plane: **${{ steps.extract-context.outputs.team }}-${{ steps.extract-context.outputs.env }}**):
+            
+            ```
+            ${{ env.DIFF }}
+            ```
+          files:
+            - ${{ steps.extract-context.outputs.file }}
