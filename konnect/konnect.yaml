@@ -1,83 +1,114 @@
----
-# Starter Template for Konnect Orchestrator Configuration
-# This file serves as a template to define the configuration required for the orchestrator.
-# Fill in the fields with values specific to your setup.
-# Comments explain the purpose of each key and value.
-
-# The platform key defines the platform team configuration.
+---  
+# The platform key defines the platform team configuration
 platform:
-  # Repository where platform team automations, configuration, and other code is written to
+  # this is the repo where platform team automations, configuration, and other 
+  # code is stored.
   git:
-    remote: https://github.com/your-org/platform.git # Replace with your platform's git repository URL.
+    remote: https://github.com/KongAirlines/platform.git 
     author:
-      name: "Your Automation Name" # Example: "Konnect Orchestrator"
-      email: "your-email@example.com" # Example: "ko@yourorg.com"
+      name: "Konnect Orchestrator"
+      email: "ko@konghq.com"
     github:
       token: &platform_github_token
-        type: file # Options: `file`, `env`, or `literal`.
-        value: $HOME/.github/your-platform-token.pat # Path to your GitHub Personal Access Token (PAT).
-    auth: # Used for git authorization.
-      # `type` is required and can be either: `ssh` or `token`.
-      type: token # Example: `token` or `ssh`.
+        type: file
+        value: $HOME/.github/20241213-KongAirlines-platform.pat
+    auth: # Used for git authorization
+      # type is required and can be either: `ssh` or `token`
+      type: token
       token: *platform_github_token
-      # ssh:  
-      #   key:
-      #     type: file
-      #     value: $HOME/.ssh/id_ed25519 # Path to your SSH private key.
+      #ssh:
+      #  key:
+      #    type: file
+      #    value: $HOME/.ssh/id_ed25519
 
-# The teams key defines your organizational layout of engineering teams and services they build and support. 
+# teams define the names, description, and members of engineering groups.
+#   teams are associated with services. These are the applications they build
+#   and maintain. 
 teams:
-  # teams are defined by a key that represents the team name and an object with the team's configuration.
-  example-team: # Replace with your team name, e.g., `backend-team`.
-    description: Description of your team. # Example: "Backend Development Team"
+  flight-data:
+    description: Kong Air Flight Data team
+    # Users are invited to Konnect if they aren't already registered
     users:
-      # List the email addresses of team members. They will be invited to Konnect if not already registered.
-      - "user1@example.com"
-      - "user2@example.com"
+      - "rick.spurgeon+KAFD1@konghq.com"
+      - "rick.spurgeon+KAFD2@konghq.com"
     # services are the applications this team builds and maintains.
+    #   Each service provides sufficient metadata to allow the orchestrator
+    #   to apply service specific configurations and policies.
     services:
-      # Define services this team builds and maintains.
-      your-org/example-service: # Use a hierarchical service name to group services by organization.
-        name: example-service # Short name for the service.
-        description: Brief description of the service. # Example: "Handles API requests for customer data."
+      KongAirlines/routes:
+        # The service key supports a heirarchical name.
+        # This can support service specific patches by allowing patches to be 
+        # specified in a matching folder structure.
+        name: routes
+        description: Provides the KongAir routing information including flight origin and destination codes. The API also provdes average duration of flight time for each route. 
         git:
-          remote: git@github.com:your-org/example-service.git # Repository for the service.
+          remote: git@github.com:KongAirlines/routes.git 
           auth:
-            type: ssh # Example: `ssh`.
+            type: ssh
             ssh:
               key:
                 type: file
-                value: $HOME/.ssh/id_ed25519 # Path to your SSH private key.
-        spec-path: openapi.yaml # Path to the OpenAPI spec, relative to the repository root.
+                value: $HOME/.ssh/id_ed25519
+        # The idea with spec-path is a pointer to an OAS3 spec file, which is used
+        # as a basis for Kong Gateway configuration generation by the central automation
+        spec-path: openapi.yaml # relative to the vcs root 
+      KongAirlines/flights:
+        name: flights
+        description: Provides the KongAir flights information including flight number and other details.
+        git:
+          remote: git@github.com:KongAirlines/flights.git
+          auth:
+            type: ssh
+            ssh:
+              key:
+                type: file
+                value: $HOME/.ssh/id_ed25519
+        spec-path: openapi.yaml
 
-# The organizations field defines the structure of your managed teams and services 
-# across one or more Konnect Organizations and environments.
+# The organizations field defines the topology of the managed teams and services across 
+# one or more Konnect Organizations. This allows the orchestrator to
+# manage consistent resource names and configurations
 organizations:
-  # Replace `YourOrg` with your organization name. This should relate to a Konnect Organization you have created
-  # Multiple organizations are supported
-  YourOrg:
-    # This is the Konnect access token, use an Organization Admin system account token or Personal Access token
+
+  # This key is arbitrary as it relates to Konnect, but it's recommended to relate to 
+  # the organization name 
+  KongAirlines:
+    # API calls are scoped to organizations via the access-token used,
+    # thus, we don't need to track the org ID here.
+    # The access-token field supports a file, environment variable, or literal string type.
     access-token:
-      type: file # Options: `file`, `env`, or `literal`.
-      value: $HOME/.konnect/your-org-access-token.pat # Path to your Konnect access token.
-    # Environments inside of Konnect are "implied", meaning that they are accomplished by using
-    # resource naming prefixes to differentiate between environments.
+      type: file
+      value: $HOME/.konnect/20241211-ka-ko.spat
+      # ---
+      # type: env
+      # value: KONNECT_ACCESS_TOKEN
+      # ---
+      # type: literal # not recommended to prevent accidental exposure
+      # value: pat_ajbjdkfjhfhijajaj
     environments:
       dev:
-        # environment type can be either `DEV` or `PROD`, and different policies will be applied based on the choice
-        type: DEV # Environment type, either `DEV` or `PROD`.
-        region: us # Region, e.g., `us`, `eu`, etc.
+        # `type` is required and can be either: `DEV` or `PROD`
+        #   These values are well known to the orchestrator and are used to determine the 
+        #   policies applied to resources
+        type: DEV
+        # `region` is required and must equal one of the Konnect supported region strings
+        region: us
+        # Here we are defining which team's services are deployed to this environment
         teams:
-          example-team:
+          flight-data:
             services:
-              your-org/example-service: # this key must match a service key in the `teams` section
-                # The branch is used to read resources from the service repo to write to the platform repo
-                branch: dev # Branch for environment-specific resources.
-      prod:
+              KongAirlines/routes:
+                # The branch tells the orchestrator where to find environment specific resources
+                branch: dev
+              KongAirlines/flights:
+                branch: dev
+      prd:
         type: PROD
         region: us
         teams:
-          example-team:
+          flight-data:
             services:
-              your-org/example-service:
-                branch: main # Branch for production resources.
+              KongAirlines/routes:
+                branch: main
+              KongAirlines/flights:
+                branch: main
