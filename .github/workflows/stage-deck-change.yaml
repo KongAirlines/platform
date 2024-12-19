@@ -162,7 +162,7 @@ jobs:
           
           # Temporarily allow failures
           set +e
-          deck gateway diff --verbose 10 --konnect-control-plane-name "$CONTROL_PLANE_NAME" --konnect-token "$KONNECT_PAT" "$FILE_PATH" >> $GITHUB_ENV
+          deck gateway diff --konnect-control-plane-name "$CONTROL_PLANE_NAME" --konnect-token "$KONNECT_PAT" "$FILE_PATH" >> $GITHUB_ENV
           STATUS=$?
           set -e
           
