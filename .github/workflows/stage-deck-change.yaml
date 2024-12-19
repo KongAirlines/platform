@@ -154,9 +154,13 @@ jobs:
           FILE_PATH="${{ steps.extract-context.outputs.file }}"
           CONTROL_PLANE_NAME="${TEAM}-${ENV}"
 
-          # Calculate the diff
-          DIFF=$(deck gateway diff --konnect-control-plane-name "$CONTROL_PLANE_NAME" --konnect-token "$KONNECT_PAT" "$FILE_PATH")
-          echo "DIFF=$DIFF" >> $GITHUB_ENV
+          # deck diff results in a multi-line output, which requires some
+          #  bash gymnastics to handle and pass through to the next step
+          #  See: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#example-of-a-multiline-string
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "DIFF<<$EOF" >> $GITHUB_ENV
+          deck gateway diff --konnect-control-plane-name "$CONTROL_PLANE_NAME" --konnect-token "$KONNECT_PAT" "$FILE_PATH" >> $GITHUB_ENV
+          echo "$EOF" >> $GITHUB_ENV
 
       - name: Create PR for changes
         uses: peter-evans/create-pull-request@v5
