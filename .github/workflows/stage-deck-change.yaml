@@ -1,4 +1,4 @@
-name: Konnect - Process Kong Gateway Configs
+name: Konnect - Stage decK changes 
 
 on:
   push:
