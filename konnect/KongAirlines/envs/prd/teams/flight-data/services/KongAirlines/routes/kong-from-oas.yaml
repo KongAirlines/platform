@@ -1,6 +1,6 @@
 _format_version: "3.0"
 services:
-- host: api.kong-air.com
+- host: bpi.kong-air.com
   id: 5bbc0ad8-3b7c-5dfe-a676-b28f30523a6f
   name: routes-service
   path: /
