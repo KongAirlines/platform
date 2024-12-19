@@ -96,7 +96,6 @@ jobs:
 
   process-changes:
     name: Process and Stage Diffs
-    if: false
     needs: [merge-deck-files]
     runs-on: ubuntu-latest
     strategy:
