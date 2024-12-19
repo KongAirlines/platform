@@ -8,14 +8,23 @@ info:
   title: Routes Service
 
 servers:
-- url: https://api.kong-air.com
-  description: KongAir API Server
+  - url: https://api.kong-air.com
+    description: KongAir API Server
+
+tags:
+  - name: health
+    description: Health check endpoints
+  - name: flight-data
+    description: Operations related to flight data
 
 paths:
   /health:
     get:
       summary: Health check endpoint for Kubernetes
       description: Endpoint that returns the service health status.
+      tags:
+        - health
+      operationId: healthCheck
       responses:
         '200':
           description: Service is healthy
@@ -37,14 +46,15 @@ paths:
                   status:
                     type: string
                     example: "unhealthy"
+
   "/routes/{id}":
     get:
-      summary: Request a specific KongAir route by id (LHR-SIN)
+      summary: Request a specific KongAir route by id (e.g., LHR-SIN)
       description: |
         Returns a specific route from a given Route ID
       tags:
-      - flight-data
-      operationId: get-route
+        - flight-data
+      operationId: getRouteById
       parameters:
         - name: id
           in: path
@@ -52,6 +62,7 @@ paths:
           required: true
           schema:
             type: string
+          example: "LHR-SIN"
       responses:
         '200':
           description: Successful response with the found Route
@@ -59,8 +70,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Route'
+              examples:
+                exampleRoute:
+                  value:
+                    id: "LHR-SIN"
+                    origin: "LHR"
+                    destination: "SIN"
+                    avg_duration: 780
         '404':
           description: Route not found
+
   "/routes":
     get:
       summary: Request all the KongAir routes
@@ -68,18 +87,19 @@ paths:
         Returns all the routes KongAir is currently registered to fly.
         A Route is a pairing between origin and destination airport codes.
       tags:
-      - flight-data
-      operationId: get-routes
+        - flight-data
+      operationId: getAllRoutes
       parameters:
         - name: origin
           in: query
-          description: filter by origin
+          description: Filter by origin airport code
           required: false
           style: form
           schema:
             type: array
             items:
               type: string
+          example: ["LHR", "JFK"]
       responses:
         '200':
           description: Successful response with the registered Routes
@@ -91,29 +111,39 @@ paths:
                   $ref: '#/components/schemas/Route'
               examples:
                 lhr-sfo:
-                  value: |
-                   [{
-                      "id": "LHR-SFO",
-                      "origin": "LHR",
-                      "destination": "SFO",
-                      "avg_duration": 660
-                    }]
+                  value:
+                    - id: "LHR-SFO"
+                      origin: "LHR"
+                      destination: "SFO"
+                      avg_duration: 660
 
 components:
   schemas:
     Route:
       type: object
+      description: Represents a KongAir route between an origin and destination airport
       properties:
         id:
           type: string
+          description: Unique identifier for the route
         origin:
           type: string
+          description: Origin airport code
         destination:
           type: string
+          description: Destination airport code
         avg_duration:
           type: integer
+          description: Average duration of the flight in minutes
       required:
         - id
         - origin
         - destination
         - avg_duration
+      examples:
+        exampleRoute:
+          value:
+            id: "LHR-JFK"
+            origin: "LHR"
+            destination: "JFK"
+            avg_duration: 420
