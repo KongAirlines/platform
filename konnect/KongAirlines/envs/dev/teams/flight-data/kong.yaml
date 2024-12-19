@@ -1,0 +1,91 @@
+_format_version: "3.0"
+services:
+- host: api.kong-air.com
+  id: 5bbc0ad8-3b7c-5dfe-a676-b28f30523a6f
+  name: routes-service
+  path: /
+  plugins: []
+  port: 443
+  protocol: https
+  routes:
+  - id: 2cd9db45-c042-57cc-8cca-65284bd70ba1
+    methods:
+    - GET
+    name: routes-service_healthcheck
+    paths:
+    - ~/health$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  - id: 819c0a1c-b132-504d-8f46-ee3eb72832b1
+    methods:
+    - GET
+    name: routes-service_getallroutes
+    paths:
+    - ~/routes$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  - id: 090c7ffa-a1e7-5cca-9672-f71d2aefd295
+    methods:
+    - GET
+    name: routes-service_getroutebyid
+    paths:
+    - ~/routes/(?<id>[^#?/]+)$
+    plugins: []
+    regex_priority: 100
+    strip_path: false
+    tags: []
+  tags: []
+- host: api.kong-air.com
+  id: 0cef4d36-9c39-5ac2-9d9f-190d8ea8a252
+  name: flights-service
+  path: /
+  plugins: []
+  port: 443
+  protocol: https
+  routes:
+  - id: 7b2dbd94-ec5b-5ae8-b6d5-4c8b16ce0b06
+    methods:
+    - GET
+    name: flights-service_get-flights
+    paths:
+    - ~/flights$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  - id: 3210c3ed-9976-500d-ac03-07eaac972ad0
+    methods:
+    - GET
+    name: flights-service_get-flight-by-number
+    paths:
+    - ~/flights/(?<flightnumber>[^#?/]+)$
+    plugins: []
+    regex_priority: 100
+    strip_path: false
+    tags: []
+  - id: 08020aa2-6106-59ec-903a-3459e7cbb629
+    methods:
+    - GET
+    name: flights-service_get-flight-details
+    paths:
+    - ~/flights/(?<flightnumber>[^#?/]+)/details$
+    plugins: []
+    regex_priority: 100
+    strip_path: false
+    tags: []
+  - id: 6a098560-97ed-58c7-b318-901ce74be7bc
+    methods:
+    - GET
+    name: flights-service_health
+    paths:
+    - ~/health$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  tags: []
+upstreams: []
