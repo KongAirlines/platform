@@ -35,7 +35,9 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: "OK"
+                    example: "healthy"
+              example:
+                status: "healthy"
         '500':
           description: Service is unhealthy
           content:
@@ -46,6 +48,8 @@ paths:
                   status:
                     type: string
                     example: "unhealthy"
+              example:
+                status: "unhealthy"
 
   "/routes/{id}":
     get:
@@ -99,6 +103,7 @@ paths:
             type: array
             items:
               type: string
+              example: "LHR"
           example: ["LHR", "JFK"]
       responses:
         '200':
@@ -140,10 +145,3 @@ components:
         - origin
         - destination
         - avg_duration
-      examples:
-        exampleRoute:
-          value:
-            id: "LHR-JFK"
-            origin: "LHR"
-            destination: "JFK"
-            avg_duration: 420
