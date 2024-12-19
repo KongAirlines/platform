@@ -1,7 +1,7 @@
 _format_version: "3.0"
 services:
 - host: api.kong-air.com
-  id: 9bbc0ad8-3b7c-5dfe-a676-b28f30523a6f
+  id: FEBF2CC1-29A1-4605-A179-EE8E3DB45CCA
   name: routes-service
   path: /
   plugins: []
@@ -30,7 +30,7 @@ services:
     tags: []
   tags: []
 - host: api.kong-air.com
-  id: 5cef4d36-9c39-5ac2-9d9f-190d8ea8a252
+  id: F8C77175-F2D8-43B0-BF18-EEA2E6F733C2
   name: flights-service
   path: /
   plugins: []
@@ -46,7 +46,9 @@ services:
     plugins: []
     regex_priority: 200
     strip_path: false
-    tags: []
+    tags:
+    - foo
+    - bar
   - id: 3210c3ed-9976-500d-ac03-07eaac972ad0
     methods:
     - GET
