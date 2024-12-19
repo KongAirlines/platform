@@ -108,11 +108,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Download artifact
+      - name: Download modified files
         uses: actions/download-artifact@v3
         with:
-          name: kong-merged-files 
+          name: modified-kong-yaml-files
           path: .
+
+      - name: Place modified files in working directory
+        run: |
+          FILE_PATH="${{ matrix.context.file }}"
+          TARGET_DIR=$(dirname "$FILE_PATH")
+          mkdir -p "$TARGET_DIR"
+          cp "./upload_dir/$FILE_PATH" "$FILE_PATH"
+          echo "Placed file: $FILE_PATH"
+
+      - name: Stage modified file
+        run: |
+          FILE_PATH="${{ matrix.context.file }}"
+          git add "$FILE_PATH"
+          echo "Staged file: $FILE_PATH"
 
       - name: Extract context from matrix
         id: extract-context
