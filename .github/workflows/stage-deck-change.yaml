@@ -170,9 +170,8 @@ jobs:
           labels: "${{ steps.extract-context.outputs.env }},kong,konnect"
           commit-message: "Updated Kong Gateway Configurations for ${{ steps.extract-context.outputs.env }}/${{ steps.extract-context.outputs.team }}"
           body: |
-            This PR includes the following changes for **${{ steps.extract-context.outputs.team }}** in the **${{ steps.extract-context.outputs.env }}** environment.
-
-            (Konnect Control Plane: **${{ steps.extract-context.outputs.team }}-${{ steps.extract-context.outputs.env }}**):
+            This PR includes the following proposed changes for **${{ steps.extract-context.outputs.team }}** in the **${{ steps.extract-context.outputs.env }}** environment,
+            targeting the **${{ steps.extract-context.outputs.team }}-${{ steps.extract-context.outputs.env }}**) Control Plane.
             
             ```
             ${{ env.DIFF }}
