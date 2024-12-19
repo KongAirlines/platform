@@ -17,7 +17,7 @@ services:
     plugins: []
     regex_priority: 200
     strip_path: false
-    tags: ["foo"]
+    tags: ["foo", "bar"]
   - id: 3210c3ed-9976-500d-ac03-07eaac972ad0
     methods:
     - GET
