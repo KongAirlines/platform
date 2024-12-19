@@ -1,0 +1,147 @@
+---
+# OpenAPI Spec for the KongAir Routes service
+openapi: 3.0.0
+
+info:
+  description: KongAir routes service provides the registered routes KongAir flies between origin and destination airports
+  version: 0.1.0
+  title: Routes Service
+
+servers:
+  - url: https://api.kong-air.com
+    description: KongAir API Server
+
+tags:
+  - name: health
+    description: Health check endpoints
+  - name: flight-data
+    description: Operations related to flight data
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint for Kubernetes
+      description: Endpoint that returns the service health status.
+      tags:
+        - health
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+              example:
+                status: "healthy"
+        '500':
+          description: Service is unhealthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "unhealthy"
+              example:
+                status: "unhealthy"
+
+  "/routes/{id}":
+    get:
+      summary: Request a specific KongAir route by id (e.g., LHR-SIN)
+      description: |
+        Returns a specific route from a given Route ID
+      tags:
+        - flight-data
+      operationId: getRouteById
+      parameters:
+        - name: id
+          in: path
+          description: String route ID
+          required: true
+          schema:
+            type: string
+          example: "LHR-SIN"
+      responses:
+        '200':
+          description: Successful response with the found Route
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Route'
+              examples:
+                exampleRoute:
+                  value:
+                    id: "LHR-SIN"
+                    origin: "LHR"
+                    destination: "SIN"
+                    avg_duration: 780
+        '404':
+          description: Route not found
+
+  "/routes":
+    get:
+      summary: Request all the KongAir routes
+      description: |
+        Returns all the routes KongAir is currently registered to fly.
+        A Route is a pairing between origin and destination airport codes.
+      tags:
+        - flight-data
+      operationId: getAllRoutes
+      parameters:
+        - name: origin
+          in: query
+          description: Filter by origin airport code
+          required: false
+          style: form
+          schema:
+            type: array
+            items:
+              type: string
+              example: "LHR"
+          example: ["LHR", "JFK"]
+      responses:
+        '200':
+          description: Successful response with the registered Routes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Route'
+              examples:
+                lhr-sfo:
+                  value:
+                    - id: "LHR-SFO"
+                      origin: "LHR"
+                      destination: "SFO"
+                      avg_duration: 660
+
+components:
+  schemas:
+    Route:
+      type: object
+      description: Represents a KongAir route between an origin and destination airport
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the route
+        origin:
+          type: string
+          description: Origin airport code
+        destination:
+          type: string
+          description: Destination airport code
+        avg_duration:
+          type: integer
+          description: Average duration of the flight in minutes
+      required:
+        - id
+        - origin
+        - destination
+        - avg_duration
