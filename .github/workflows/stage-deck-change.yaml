@@ -56,7 +56,13 @@ jobs:
                 KONG_FILES=$(find "$ENV_DIR" -name 'kong-from-oas.yaml')
                 if [[ -n "$KONG_FILES" ]]; then
                   deck file merge $KONG_FILES -o "$OUTPUT_FILE"
-                  echo "Merged files written to: $OUTPUT_FILE"
+                  echo "Merged file written to: $OUTPUT_FILE"
+
+                  # Upload artifact directly
+                  ARTIFACT_NAME="${TEAM}-${ENV}-kong"
+                  echo "Uploading artifact: $ARTIFACT_NAME"
+                  gh-actions-upload-artifact -name "$ARTIFACT_NAME" -path "$OUTPUT_FILE"
+
                   OUTPUT_MATRIX+=("{\"team\":\"$TEAM\",\"env\":\"$ENV\",\"file\":\"$OUTPUT_FILE\"}")
                 fi
               else
@@ -68,12 +74,6 @@ jobs:
           MATRIX=$(printf '[%s]' "$(printf '%s,' "${OUTPUT_MATRIX[@]}" | sed 's/,$//')")
           echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: kong-merged-yaml-files
-          path: konnect/**/kong.yaml
-
   process-changes:
     name: Process and Stage Diffs
     needs: [merge-deck-files]
@@ -84,13 +84,14 @@ jobs:
       max-parallel: 1
       fail-fast: true
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: kong-merged-yaml-files
-
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ matrix.context.team }}-${{ matrix.context.env }}-kong
+          path: .
 
       - name: Extract context from matrix
         id: extract-context
