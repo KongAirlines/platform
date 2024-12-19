@@ -8,16 +8,6 @@ services:
   port: 443
   protocol: https
   routes:
-  - id: 2cd9db45-c042-57cc-8cca-65284bd70ba1
-    methods:
-    - GET
-    name: routes-service_healthcheck
-    paths:
-    - ~/health$
-    plugins: []
-    regex_priority: 200
-    strip_path: false
-    tags: []
   - id: 819c0a1c-b132-504d-8f46-ee3eb72832b1
     methods:
     - GET
