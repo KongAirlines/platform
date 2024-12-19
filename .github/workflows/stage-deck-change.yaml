@@ -111,15 +111,15 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: modified-kong-yaml-files
-          path: .
+          path: ./download_dir/
 
       - name: Place modified files in working directory
         run: |
           FILE_PATH="${{ matrix.context.file }}"
           TARGET_DIR=$(dirname "$FILE_PATH")
           mkdir -p "$TARGET_DIR"
-          cp "./upload_dir/$FILE_PATH" "$FILE_PATH"
-          echo "Placed file: $FILE_PATH"
+          cp "download_dir/$FILE_PATH" "$FILE_PATH"
+          echo "Wrote file: $FILE_PATH"
 
       - name: Stage modified file
         run: |
