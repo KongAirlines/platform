@@ -120,7 +120,7 @@ jobs:
           CONTROL_PLANE_NAME="${TEAM}-${ENV}"
 
           # Calculate the diff
-          DIFF=$(deck gateway diff -s "$FILE_PATH" --konnect-control-plane-name "$CONTROL_PLANE_NAME" --konnect-token "$KONNECT_PAT")
+          DIFF=$(deck gateway diff --konnect-control-plane-name "$CONTROL_PLANE_NAME" --konnect-token "$KONNECT_PAT" "$FILE_PATH")
           echo "DIFF=$DIFF" >> $GITHUB_ENV
 
       - name: Create PR for changes
