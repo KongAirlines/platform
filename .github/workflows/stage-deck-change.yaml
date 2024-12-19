@@ -151,7 +151,7 @@ jobs:
         run: |
           TEAM="${{ steps.extract-context.outputs.team }}"
           ENV="${{ steps.extract-context.outputs.env }}"
-          FILE_PATH="downloads/${{ matrix.context.file }}"  # Use the downloaded artifact path
+          FILE_PATH="${{ steps.extract-context.outputs.file }}"
           CONTROL_PLANE_NAME="${TEAM}-${ENV}"
 
           # Calculate the diff
