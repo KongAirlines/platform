@@ -25,6 +25,22 @@ platform:
 #   teams are associated with services. These are the applications they build
 #   and maintain. 
 teams:
+  customer-data:
+    description: Kong Air Customer Data team
+    users:
+      - "rick.spurgeon+KAFD1@konghq.com"
+    services:
+      KongAirlines/customers:
+        name: customers
+        description: Provides the KongAir customer information including customer name, address, and other details.
+        git:
+          remote: git@github.com:KongAirlines/customer.git
+          auth:
+            type: ssh
+            ssh:
+              key:
+                type: file
+                value: $HOME/.ssh/id_ed25519
   flight-data:
     description: Kong Air Flight Data team
     # Users are invited to Konnect if they aren't already registered
