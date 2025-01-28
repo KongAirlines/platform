@@ -1,4 +1,14 @@
----  
+# TLDR for the the file layout below 
+# --- 
+# platform:
+#   The configuration for the platform repository
+# teams:
+#   The engineering organization's teams, their git repos and associated services
+# organizations:
+#   The organization's Konnect configuration. Defines environments (DEV/PRD)
+#   and what teams and services belong in them.
+
+---
 # The platform key defines the platform team configuration
 platform:
   # this is the repo where platform team automations, configuration, and other 
@@ -30,17 +40,31 @@ teams:
     users:
       - "rick.spurgeon+KAFD1@konghq.com"
     services:
-      KongAirlines/customers:
+      KongAirlines/customer:
         name: customers
         description: Provides the KongAir customer information including customer name, address, and other details.
         git:
-          remote: git@github.com:KongAirlines/customer.git
+          remote: git@github.com:KongAirlines/customer.git 
           auth:
             type: ssh
             ssh:
               key:
                 type: file
                 value: $HOME/.ssh/id_ed25519
+        spec-path: openapi.yaml
+      KongAirlines/bookings:
+        name: bookings
+        description: Provides the KongAir booking information including booking number, flight number, and other details.
+        git:
+          remote: git@github.com:KongAirlines/bookings.git
+          auth:
+            type: ssh
+            ssh:
+              key:
+                type: file
+                value: $HOME/.ssh/id_ed25519
+        spec-path: openapi.yaml
+
   flight-data:
     description: Kong Air Flight Data team
     # Users are invited to Konnect if they aren't already registered
@@ -118,6 +142,12 @@ organizations:
                 branch: dev
               KongAirlines/flights:
                 branch: dev
+          customer-data:
+            services:
+              KongAirlines/customer:
+                branch: dev
+              KongAirlines/bookings:
+                branch: dev
       prd:
         type: PROD
         region: us
@@ -127,4 +157,10 @@ organizations:
               KongAirlines/routes:
                 branch: main
               KongAirlines/flights:
+                branch: main
+          customer-data:
+            services:
+              KongAirlines/customer:
+                branch: main
+              KongAirlines/bookings:
                 branch: main
