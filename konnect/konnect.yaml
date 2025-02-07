@@ -11,8 +11,8 @@
 ---
 # The platform key defines the platform team configuration
 platform:
-  # this is the repo where platform team automations, configuration, and other 
-  # code is stored.
+  # This is the repo where platform team automations, configuration, and other 
+  # artifacts are pushed.
   git:
     remote: https://github.com/KongAirlines/platform.git 
     author:
@@ -31,12 +31,19 @@ platform:
       #    type: file
       #    value: $HOME/.ssh/id_ed25519
 
+
 # teams define the names, description, and members of engineering groups.
 #   teams are associated with services. These are the applications they build
 #   and maintain. 
 teams:
   customer-data:
+    # The Konnect orchestrator creates a Konnect team for each team defined here. 
     description: Kong Air Customer Data team
+    # Assuming we have IdP configurations configured and enabled, we can assign
+    # the team managed here to a list of IdP manged group claims.
+    idp-group-mappings:
+      - "customer-data"
+      - "api-producer"
     users:
       - "rick.spurgeon+KAFD1@konghq.com"
     services:
@@ -110,9 +117,11 @@ teams:
 # manage consistent resource names and configurations
 organizations:
 
-  # This key is arbitrary as it relates to Konnect, but it's recommended to relate to 
-  # the organization name 
+  # This key is arbitrary, but it's recommended to relate to 
+  # the organization name within Konnect
   KongAirlines:
+
+    # This configures how the orchestrator authenticates to Konnect APIs.
     # API calls are scoped to organizations via the access-token used,
     # thus, we don't need to track the org ID here.
     # The access-token field supports a file, environment variable, or literal string type.
@@ -125,8 +134,48 @@ organizations:
       # ---
       # type: literal # not recommended to prevent accidental exposure
       # value: pat_ajbjdkfjhfhijajaj
+ 
+    # This defines the organization's Konnect _user_ authentication configuration,
+    # including IdP configurations and team mappings.
+    # It is recommended to use a single authentication method, however, 
+    # Konnect supports the ability to combine built-in authentication with either OIDC or SAML based SSO. 
+    # Combining both OIDC and SAML based SSO is not supported. Keep built-in authentication enabled 
+    # while you are testing IdP authentication and only disable it after successfully testing your SSO configuration.
+    authorization:
+      built-in:
+        enabled: true
+      oidc:
+        enabled: true
+        login-path: kongairlines
+        issuer: https://dev-26696402.okta.com/oauth2/default
+        client-id: 0oamj7tntcMapIsET5d7
+        client-secret:
+          type: file
+          value: $HOME/.konnect/kongairlines-oidc-client-secret.txt
+        claim-mappings:
+          email: email
+          name: name
+          groups: groups
+        scopes:
+          - openid
+          - email
+          - profile
+      saml:
+        enabled: false
+        login-path: kongairlines_saml
+        idp-metadata-url: https://dev-26696402.okta.com/app/exkmoj7cryENs4tDa5d7/sso/saml/metadata
+      team-mappings:
+        built-in:
+          enabled: true
+        idp:
+          enabled: true
+          mappings:
+            "Organization Admin": 
+            - "platform"
+            - "api-admins"
+      
     environments:
-      dev:
+      dev: # an environment name
         # `type` is required and can be either: `DEV` or `PROD`
         #   These values are well known to the orchestrator and are used to determine the 
         #   policies applied to resources
