@@ -82,14 +82,14 @@ teams:
     #   Each service provides sufficient metadata to allow the orchestrator
     #   to apply service specific configurations and policies.
     services:
-      KongAirlines/routes:
+      KongAirlines/destinations:
         # The service key supports a heirarchical name.
         # This can support service specific patches by allowing patches to be 
         # specified in a matching folder structure.
-        name: routes
-        description: Provides the KongAir routing information including flight origin and destination codes. The API also provdes average duration of flight time for each route. 
+        name: destinations
+        description: Provides the KongAir destination information including flight origin and destination codes. The API also provdes average duration of flight time for each flight route.
         git:
-          remote: git@github.com:KongAirlines/routes.git 
+          remote: git@github.com:KongAirlines/destinations.git 
           auth:
             type: ssh
             ssh:
@@ -186,7 +186,7 @@ organizations:
         teams:
           flight-data:
             services:
-              KongAirlines/routes:
+              KongAirlines/destination:
                 # The branch tells the orchestrator where to find environment specific resources
                 branch: dev
               KongAirlines/flights:
@@ -203,7 +203,7 @@ organizations:
         teams:
           flight-data:
             services:
-              KongAirlines/routes:
+              KongAirlines/destinations:
                 branch: main
               KongAirlines/flights:
                 branch: main
