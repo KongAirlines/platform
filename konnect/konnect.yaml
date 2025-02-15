@@ -127,7 +127,7 @@ organizations:
     # The access-token field supports a file, environment variable, or literal string type.
     access-token:
       type: file
-      value: $HOME/.konnect/20241211-ka-ko.spat
+      value: $HOME/.konnect/20250214-Konnect-Orchestrator.spat
       # ---
       # type: env
       # value: KONNECT_ACCESS_TOKEN
@@ -186,7 +186,7 @@ organizations:
         teams:
           flight-data:
             services:
-              KongAirlines/destination:
+              KongAirlines/destinations:
                 # The branch tells the orchestrator where to find environment specific resources
                 branch: dev
               KongAirlines/flights:
