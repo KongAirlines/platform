@@ -1,0 +1,78 @@
+# teams define the names, description, and members of engineering groups.
+#   teams are associated with services. These are the applications they build
+#   and maintain. 
+customer-data:
+  # The Konnect orchestrator creates a Konnect team for each team defined here. 
+  description: Kong Air Customer Data team
+  # Assuming we have IdP configurations configured and enabled, we can assign
+  # the team managed here to a list of IdP manged group claims.
+  idp-group-mappings:
+    - "customer-data"
+    - "api-producer"
+  users:
+    - "rick.spurgeon+KAFD1@konghq.com"
+  services:
+    KongAirlines/customer:
+      name: customers
+      description: Provides the KongAir customer information including customer name, address, and other details.
+      git:
+        remote: git@github.com:KongAirlines/customer.git 
+        auth:
+          type: ssh
+          ssh:
+            key:
+              type: file
+              value: $HOME/.ssh/id_ed25519
+      spec-path: openapi.yaml
+    KongAirlines/bookings:
+      name: bookings
+      description: Provides the KongAir booking information including booking number, flight number, and other details.
+      git:
+        remote: git@github.com:KongAirlines/bookings.git
+        auth:
+          type: ssh
+          ssh:
+            key:
+              type: file
+              value: $HOME/.ssh/id_ed25519
+      spec-path: openapi.yaml
+
+flight-data:
+  description: Kong Air Flight Data team
+  # Users are invited to Konnect if they aren't already registered
+  users:
+    - "rick.spurgeon+KAFD1@konghq.com"
+    - "rick.spurgeon+KAFD2@konghq.com"
+  # services are the applications this team builds and maintains.
+  #   Each service provides sufficient metadata to allow the orchestrator
+  #   to apply service specific configurations and policies.
+  services:
+    KongAirlines/destinations:
+      # The service key supports a heirarchical name.
+      # This can support service specific patches by allowing patches to be 
+      # specified in a matching folder structure.
+      name: destinations
+      description: Provides the KongAir destination information including flight origin and destination codes. The API also provdes average duration of flight time for each flight route.
+      git:
+        remote: git@github.com:KongAirlines/destinations.git 
+        auth:
+          type: ssh
+          ssh:
+            key:
+              type: file
+              value: $HOME/.ssh/id_ed25519
+      # The idea with spec-path is a pointer to an OAS3 spec file, which is used
+      # as a basis for Kong Gateway configuration generation by the central automation
+      spec-path: openapi.yaml # relative to the vcs root 
+    KongAirlines/flights:
+      name: flights
+      description: Provides the KongAir flights information including flight number and other details.
+      git:
+        remote: git@github.com:KongAirlines/flights.git
+        auth:
+          type: ssh
+          ssh:
+            key:
+              type: file
+              value: $HOME/.ssh/id_ed25519
+      spec-path: openapi.yaml
