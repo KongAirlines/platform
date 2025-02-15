@@ -1,0 +1,42 @@
+_format_version: "3.0"
+services:
+- host: api.kong-air.com
+  id: 8f99ee5a-f1c0-5364-9e34-fe18f5946774
+  name: destionations-service
+  path: /
+  plugins: []
+  port: 443
+  protocol: https
+  routes:
+  - id: 702f349d-1011-5ab8-9d54-92986fa75fb0
+    methods:
+    - GET
+    name: destionations-service_getalldestinations
+    paths:
+    - ~/destinations$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  - id: b27825e8-035d-5ac8-ad59-a69d49325960
+    methods:
+    - GET
+    name: destionations-service_getdestinationbyid
+    paths:
+    - ~/destinations/(?<id>[^#?/]+)$
+    plugins: []
+    regex_priority: 100
+    strip_path: false
+    tags: []
+  - id: f8fe9909-9f6c-5ee7-9787-646e7b51e96e
+    methods:
+    - GET
+    name: destionations-service_gethealthstatus
+    paths:
+    - ~/health$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  tags: []
+upstreams: []
