@@ -28,7 +28,8 @@ services:
     regex_priority: 200
     strip_path: false
     tags: []
-  tags: []
+  tags:
+  - ko-api-name=customers
 - host: api.kong-air.com
   id: 22e1521b-9b91-5d2f-917b-4463066f1aed
   name: bookings-service
@@ -67,5 +68,6 @@ services:
     regex_priority: 200
     strip_path: false
     tags: []
-  tags: []
+  tags:
+  - ko-api-name=bookings
 upstreams: []
