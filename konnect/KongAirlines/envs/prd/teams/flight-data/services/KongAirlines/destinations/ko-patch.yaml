@@ -1,6 +1,7 @@
 _format_version: "1.0"
 patches:
-    - selectors: []
+    - selectors:
+        - ..services[*]
       values:
         tags:
             - ko-api-name=destinations
