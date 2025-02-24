@@ -3,12 +3,12 @@
 openapi: 3.0.0
 
 info:
-  description: KongAir Flights service application provides the scheduled flights for KongAirlines
+  description: KongAir Flights service provides the scheduled flights for KongAir
   version: 0.1.0
   title: Flights Service
 
 servers:
-- url: https://api-2.kong-air.com
+- url: https://api.kong-air.com
   description: KongAir API Server
 
 paths:
