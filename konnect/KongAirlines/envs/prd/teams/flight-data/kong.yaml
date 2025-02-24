@@ -1,6 +1,6 @@
 _format_version: "3.0"
 services:
-- host: api.kong-air.com
+- host: api-2.kong-air.com
   id: 0cef4d36-9c39-5ac2-9d9f-190d8ea8a252
   name: flights-service
   path: /
@@ -48,7 +48,8 @@ services:
     regex_priority: 200
     strip_path: false
     tags: []
-  tags: []
+  tags:
+  - ko-api-name=flights
 - host: api.kong-air.com
   id: 719016ce-90fb-5f0a-a8b7-c5344e1b55d7
   name: destinations-service
