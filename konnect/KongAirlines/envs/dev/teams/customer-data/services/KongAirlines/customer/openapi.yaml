@@ -18,6 +18,7 @@ paths:
     get:
       summary: Health check endpoint
       description: Endpoint that returns the service health status.
+      operationId: cust-health-check 
       responses:
         '200':
           description: Service is healthy
