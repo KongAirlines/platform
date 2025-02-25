@@ -1,6 +1,6 @@
 _format_version: "3.0"
 services:
-- host: api.kong-air.com
+- host: api-2.kong-air.com
   id: 0cef4d36-9c39-5ac2-9d9f-190d8ea8a252
   name: flights-service
   path: /
@@ -38,10 +38,10 @@ services:
     regex_priority: 100
     strip_path: false
     tags: []
-  - id: 6a098560-97ed-58c7-b318-901ce74be7bc
+  - id: 336227fd-579d-5ef2-8abc-a11ff8258425
     methods:
     - GET
-    name: flights-service_health
+    name: flights-service_flights-health-check
     paths:
     - ~/health$
     plugins: []
