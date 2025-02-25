@@ -8,41 +8,41 @@ info:
   title: Flights Service
 
 servers:
-- url: https://api.kong-air.com
-  description: KongAir API Server 
+- url: https://api-2.kong-air.com
+  description: KongAir API Server
 
 paths:
   /health:
-    get:
-      summary: Health check endpoint for Kubernetes
-      operationId: health
-      description: Endpoint that returns the service health status.
-      responses:
-        '200':
-          description: Service is healthy
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "OK"
-          headers:
-           hostname:
-             description: "The hostname of the machine fulfilling the request."
+   get:
+     summary: Health check endpoint
+     description: Endpoint that returns the service health status.
+     operationId: flights-health-check
+     responses:
+       '200':
+         description: Service is healthy
+         content:
+           application/json:
              schema:
-               type: string
-        '500':
-          description: Service is unhealthy
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "unhealthy"
+               type: object
+               properties:
+                 status:
+                   type: string
+                   example: "OK"
+         headers:
+          hostname:
+            description: "The hostname of the machine fulfilling the request."
+            schema:
+              type: string
+       '500':
+         description: Service is unhealthy
+         content:
+           application/json:
+             schema:
+               type: object
+               properties:
+                 status:
+                   type: string
+                   example: "unhealthy"
   "/flights":
     get:
       summary: Get KongAir planned flights
