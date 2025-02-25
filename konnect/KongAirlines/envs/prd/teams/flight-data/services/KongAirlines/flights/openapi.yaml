@@ -14,8 +14,9 @@ servers:
 paths:
   /health:
    get:
-     summary: Health check endpoint for Kubernetes
+     summary: Health check endpoint
      description: Endpoint that returns the service health status.
+     operationId: flights-health-check
      responses:
        '200':
          description: Service is healthy
