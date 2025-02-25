@@ -18,10 +18,10 @@ services:
     regex_priority: 200
     strip_path: false
     tags: []
-  - id: 37cbdca9-74d9-51ec-ab8b-008d96f9bd75
+  - id: 6e52399c-c274-5dde-acb3-58cd7a4a810e
     methods:
     - GET
-    name: customer-information-service_health_get
+    name: customer-information-service_cust-health-check
     paths:
     - ~/health$
     plugins: []
