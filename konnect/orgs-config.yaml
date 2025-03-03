@@ -67,34 +67,7 @@ KongAirlines:
       type: DEV
       # `region` is required and must equal one of the Konnect supported region strings
       region: us
-      # Here we are defining which team's services are deployed to this environment
-      teams:
-        flight-data:
-          services:
-            KongAirlines/destinations:
-              # The branch tells the orchestrator where to find environment specific resources
-              branch: dev
-            KongAirlines/flights:
-              branch: dev
-        customer-data:
-          services:
-            KongAirlines/customer:
-              branch: dev
-            KongAirlines/bookings:
-              branch: dev
     prd:
       type: PROD
       region: us
-      teams:
-        flight-data:
-          services:
-            KongAirlines/destinations:
-              branch: main
-            KongAirlines/flights:
-              branch: main
-        customer-data:
-          services:
-            KongAirlines/customer:
-              branch: main
-            KongAirlines/bookings:
-              branch: main
+

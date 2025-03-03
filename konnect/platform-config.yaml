@@ -8,7 +8,7 @@ git:
   github:
     token: &platform_github_token
       type: file
-      value: $HOME/.github/20241213-KongAirlines-platform.pat
+      value: $HOME/.github/20250228-KongAirlines-ko.pat
   auth: # Used for git authorization
     # type is required and can be either: `ssh` or `token`
     type: token

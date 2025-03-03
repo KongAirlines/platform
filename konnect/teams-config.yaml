@@ -15,27 +15,16 @@ customer-data:
     KongAirlines/customer:
       name: customers
       description: Provides the KongAir customer information including customer name, address, and other details.
+      # spec-path: openapi.yaml
+      # prod-branch-name: main
+      # dev-branch-name: dev
       git:
-        remote: git@github.com:KongAirlines/customer.git 
-        auth:
-          type: ssh
-          ssh:
-            key:
-              type: file
-              value: $HOME/.ssh/id_ed25519
-      spec-path: openapi.yaml
+        remote: https://github.com/KongAirlines/customer.git 
     KongAirlines/bookings:
       name: bookings
       description: Provides the KongAir booking information including booking number, flight number, and other details.
       git:
-        remote: git@github.com:KongAirlines/bookings.git
-        auth:
-          type: ssh
-          ssh:
-            key:
-              type: file
-              value: $HOME/.ssh/id_ed25519
-      spec-path: openapi.yaml
+        remote: https://github.com/KongAirlines/bookings.git
 
 flight-data:
   description: Kong Air Flight Data team
@@ -54,25 +43,11 @@ flight-data:
       name: destinations
       description: Provides the KongAir destination information including flight origin and destination codes. The API also provdes average duration of flight time for each flight route.
       git:
-        remote: git@github.com:KongAirlines/destinations.git 
-        auth:
-          type: ssh
-          ssh:
-            key:
-              type: file
-              value: $HOME/.ssh/id_ed25519
+        remote: https://github.com/KongAirlines/destinations.git 
       # The idea with spec-path is a pointer to an OAS3 spec file, which is used
       # as a basis for Kong Gateway configuration generation by the central automation
-      spec-path: openapi.yaml # relative to the vcs root 
     KongAirlines/flights:
       name: flights
       description: Provides the KongAir flights information including flight number and other details.
       git:
-        remote: git@github.com:KongAirlines/flights.git
-        auth:
-          type: ssh
-          ssh:
-            key:
-              type: file
-              value: $HOME/.ssh/id_ed25519
-      spec-path: openapi.yaml
+        remote: https://github.com/KongAirlines/flights.git
