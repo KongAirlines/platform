@@ -1,7 +1,7 @@
-FormatVersion: "1.0"
-Patches:
-- Selectors:
-  - $..services[*]
-  Values:
-    tags:
-    - ko-api-name=customers
+_format_version: "1.0"
+patches:
+    - selectors:
+        - $..services[*]
+      values:
+        tags:
+            - ko-api-name=customers
