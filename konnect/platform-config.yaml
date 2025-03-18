@@ -1,19 +1,10 @@
-# This is the repo where platform team automations, configuration, and other 
-# artifacts are pushed.
-git:
-  remote: https://github.com/KongAirlines/platform.git 
-  author:
-    name: "Konnect Orchestrator"
-    email: "ko@konghq.com"
-  github:
-    token: &platform_github_token
-      type: file
-      value: $HOME/.github/20250228-KongAirlines-ko.pat
-  auth: # Used for git authorization
-    # type is required and can be either: `ssh` or `token`
-    type: token
-    token: *platform_github_token
-    #ssh:
-    #  key:
-    #    type: file
-    #    value: $HOME/.ssh/id_ed25519
+platform:
+  git:
+    remote: https://github.com/KongAirlines/platform.git 
+    author:
+      name: "Konnect Orchestrator"
+      email: "ko@konghq.com"
+    github:
+      token:
+        type: file
+        value: $HOME/.github/20250228-KongAirlines-ko.pat
