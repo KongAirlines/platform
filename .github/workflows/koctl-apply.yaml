@@ -1,0 +1,32 @@
+name: Konnect - koctl apply
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "konnect/platform.yaml"
+      - "konnect/teams.yaml"
+      - "konnect/organizations.yaml"
+
+jobs:
+  sync-changes:
+    name: Sync Gateway Configs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup koctl
+        uses: jaxxstorm/action-install-gh-release@v2.0.0
+        with:
+          repo: Kong/konnect-orchestrator
+
+      - name: Run koctl apply
+        #env:
+        #  KONNECT_TOKEN: ${{ secrets[format('{0}_KONNECT_TOKEN', matrix.context.org)] }}
+        run: |
+          koctl apply 
+  #        deck gateway sync \
+  #          --konnect-control-plane-name "$CONTROL_PLANE_NAME" \
+  #          --konnect-token "$KONNECT_TOKEN" \
+  #          "$FILE_PATH"
