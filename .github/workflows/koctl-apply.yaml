@@ -22,7 +22,5 @@ jobs:
           repo: Kong/konnect-orchestrator
 
       - name: Run koctl apply
-        #env:
-        #  KONNECT_TOKEN: ${{ secrets[format('{0}_KONNECT_TOKEN', matrix.context.org)] }}
         run: |
           koctl apply 
