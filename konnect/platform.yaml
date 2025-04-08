@@ -7,4 +7,4 @@ platform:
     github:
       token:
         type: file
-        value: $HOME/.github/20250228-KongAirlines-ko.pat
+        value: $HOME/.github/20250324-Konnect-Orchestrator-Kong-Air.pat

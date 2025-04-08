@@ -13,7 +13,7 @@ organizations:
     # The access-token field supports a file, environment variable, or literal string type.
     access-token:
       type: file
-      value: $HOME/.konnect/20250214-Konnect-Orchestrator.spat
+      value: $HOME/.konnect/20250324-Konnect-Orchestrator.spat
       # ---
       # type: env
       # value: KONNECT_ACCESS_TOKEN
