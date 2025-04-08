@@ -12,14 +12,16 @@ organizations:
     # thus, we don't need to track the org ID here.
     # The access-token field supports a file, environment variable, or literal string type.
     access-token:
-      type: file
-      value: $HOME/.konnect/20250324-Konnect-Orchestrator.spat
+      #type: file
+      #value: $HOME/.konnect/20250324-Konnect-Orchestrator.spat
       # ---
       # type: env
       # value: KONNECT_ACCESS_TOKEN
       # ---
       # type: literal # not recommended to prevent accidental exposure
       # value: pat_ajbjdkfjhfhijajaj
+      type: env
+      value: KONGAIRLINES_KONNECT_TOKEN
   
     # This defines the organization's Konnect _user_ authentication configuration,
     # including IdP configurations and team mappings.
