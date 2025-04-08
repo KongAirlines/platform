@@ -24,5 +24,7 @@ jobs:
           tag: v0.4.0
 
       - name: Run koctl apply
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           koctl apply 
