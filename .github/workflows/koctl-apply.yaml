@@ -26,7 +26,3 @@ jobs:
         #  KONNECT_TOKEN: ${{ secrets[format('{0}_KONNECT_TOKEN', matrix.context.org)] }}
         run: |
           koctl apply 
-  #        deck gateway sync \
-  #          --konnect-control-plane-name "$CONTROL_PLANE_NAME" \
-  #          --konnect-token "$KONNECT_TOKEN" \
-  #          "$FILE_PATH"
