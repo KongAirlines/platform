@@ -21,10 +21,7 @@ jobs:
         uses: jaxxstorm/action-install-gh-release@v2.0.0
         with:
           repo: Kong/konnect-orchestrator
-          tag: v0.4.0
 
       - name: Run koctl apply
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           koctl apply 
