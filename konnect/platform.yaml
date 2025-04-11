@@ -1,10 +1,1 @@
 platform:
-  git:
-    remote: https://github.com/KongAirlines/platform.git 
-    author:
-      name: "Konnect Orchestrator"
-      email: "ko@konghq.com"
-    github:
-      token:
-        type: file
-        value: $HOME/.github/20250324-Konnect-Orchestrator-Kong-Air.pat
