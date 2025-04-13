@@ -18,21 +18,6 @@ jobs:
               with:
                 repo: Kong/konnect-orchestrator
                 tag: v0.7.0
-            - name: Check secret exists
-              env:
-                MY_SECRET: ${{ secrets.KONGAIRLINES_KONNECT_TOKEN }}
-              run: |
-                if [ -z "$MY_SECRET" ]; then
-                  echo "Secret is empty or missing!"
-                  exit 1
-                fi
-                 # Show a partial (first 4 and last 4 chars)
-                FIRST4=${MY_SECRET:0:4}
-                LAST4=${MY_SECRET: -4}
-                LEN=${#MY_SECRET}
-
-                echo "Secret is set (length: $LEN)"
-                echo "Start: $FIRST4**** End: ****$LAST4"
             - name: Run koctl apply
               id: koctl-apply
               env:
