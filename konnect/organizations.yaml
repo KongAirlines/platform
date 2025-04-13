@@ -1,2 +1,12 @@
 organizations:
-
+    KongAirlines:
+        access-token:
+            type: env
+            value: spat_HAOnrBdYu9nJbp6nkfesvWtD5H4aR3MtiLHeanVRSOSg7UPKg
+        environments:
+            dev:
+                type: DEV
+                region: us
+            prd:
+                type: PROD
+                region: us
