@@ -1,0 +1,53 @@
+_format_version: "3.0"
+services:
+- host: api-2.kong-air.com
+  id: 0cef4d36-9c39-5ac2-9d9f-190d8ea8a252
+  name: flights-service
+  path: /
+  plugins: []
+  port: 443
+  protocol: https
+  routes:
+  - id: 7b2dbd94-ec5b-5ae8-b6d5-4c8b16ce0b06
+    methods:
+    - GET
+    name: flights-service_get-flights
+    paths:
+    - ~/flights$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  - id: 3210c3ed-9976-500d-ac03-07eaac972ad0
+    methods:
+    - GET
+    name: flights-service_get-flight-by-number
+    paths:
+    - ~/flights/(?<flightnumber>[^#?/]+)$
+    plugins: []
+    regex_priority: 100
+    strip_path: false
+    tags: []
+  - id: 08020aa2-6106-59ec-903a-3459e7cbb629
+    methods:
+    - GET
+    name: flights-service_get-flight-details
+    paths:
+    - ~/flights/(?<flightnumber>[^#?/]+)/details$
+    plugins: []
+    regex_priority: 100
+    strip_path: false
+    tags: []
+  - id: 336227fd-579d-5ef2-8abc-a11ff8258425
+    methods:
+    - GET
+    name: flights-service_flights-health-check
+    paths:
+    - ~/health$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  tags:
+  - ko-api-name=flights-dev
+upstreams: []
