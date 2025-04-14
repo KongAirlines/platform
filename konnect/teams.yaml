@@ -1,12 +1,1 @@
 teams:
-  flight-data:
-    description: flight-data
-    services:
-      KongAirlines/destinations:
-        name: destinations
-        git:
-          remote: https://github.com/KongAirlines/destinations.git
-        description: Kong Air Destinations service provided by the flight-data team
-        spec-path: openapi.yaml
-        prod-branch-name: main
-        dev-branch-name: dev
