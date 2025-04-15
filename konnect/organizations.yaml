@@ -1,12 +1,1 @@
 organizations:
-    KongAirlines:
-        access-token:
-            type: env
-            value: KONGAIRLINES_KONNECT_TOKEN
-        environments:
-            dev:
-                type: DEV
-                region: us
-            prd:
-                type: PROD
-                region: us
