@@ -1,4 +1,15 @@
 organizations:
+    DelMe:
+        access-token:
+            type: env
+            value: DELME_KONNECT_TOKEN
+        environments:
+            dev:
+                type: DEV
+                region: us
+            prd:
+                type: PROD
+                region: us
     KongAirlines:
         access-token:
             type: env
