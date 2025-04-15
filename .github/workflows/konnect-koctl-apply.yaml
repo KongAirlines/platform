@@ -24,4 +24,5 @@ jobs:
                 GITHUB_TOKEN: ${{ secrets.KONNECT_ORCHESTRATOR_GITHUB_TOKEN }}
                 GITHUB_REPO_URL: "https://github.com/${{ github.repository }}"
                 KONGAIRLINES_KONNECT_TOKEN: ${{secrets.KONGAIRLINES_KONNECT_TOKEN}}
+                KONGAIR2_KONNECT_TOKEN: ${{secrets.KONGAIR2_KONNECT_TOKEN}}
               run: "koctl apply \n"
