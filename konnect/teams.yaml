@@ -1,4 +1,15 @@
 teams:
+  customer:
+    description: customer
+    services:
+      KongAirlines/customer:
+        name: customer
+        git:
+          remote: https://github.com/KongAirlines/customer.git
+        description: Kong Air customer information service. Provided by the customer-data team.
+        spec-path: openapi.yaml
+        prod-branch-name: main
+        dev-branch-name: dev
   flight-data:
     description: flight-data
     services:
