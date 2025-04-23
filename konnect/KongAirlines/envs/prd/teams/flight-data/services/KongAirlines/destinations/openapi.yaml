@@ -1,0 +1,152 @@
+# OpenAPI Spec for the KongAir Destinations service
+openapi: 3.0.0
+
+info:
+  description: KongAir Destinations service provides the registered airport & city destinations KongAir flies tro.
+  version: 0.1.0
+  title: Destinations Service
+
+tags:
+  - name: Health
+    description: Endpoints for checking the service health
+  - name: Destinations
+    description: Endpoints related to KongAir flight destinations
+
+servers:
+  - url: https://api.kong-air.com
+    description: KongAir API Server
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint for Kubernetes
+      description: Endpoint that returns the service health status
+      operationId: getHealthStatus
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is healthy.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+              examples:
+                healthyExample:
+                  value:
+                    status: "OK"
+        '500':
+          description: Service is unhealthy.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "unhealthy"
+              examples:
+                unhealthyExample:
+                  value:
+                    status: "unhealthy"
+
+  /destinations/{id}:
+    get:
+      summary: Request a specific KongAir destination by id (e.g., SFO)
+      description: Returns a specific destination for a given Airport ID / Code.
+      operationId: getDestinationById
+      tags:
+        - Destinations
+      parameters:
+        - name: id
+          in: path
+          description: Destination id is unique identifier for the destination airport.
+          required: true
+          schema:
+            type: string
+          example: "SIN"
+      responses:
+        '200':
+          description: Successful response with the found destination.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Destination'
+              examples:
+                destinationExample:
+                  value:
+                    id: "SIN"
+                    city: "Singapore"
+                    image: https://testimages.com/SIN
+        '404':
+          description: Destination not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Destination not found"
+              examples:
+                notFoundExample:
+                  value:
+                    message: "Destination not found."
+
+  /destinations:
+    get:
+      summary: Request all KongAir destinations
+      description: Returns all the destinations KongAir is currently registered to fly.
+      operationId: getAllDestinations
+      tags:
+        - Destinations
+      responses:
+        '200':
+          description: Successful response with the registered destinations.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Destination'
+              examples:
+                multipleDestinationsExample:
+                  value:
+                    - id: "SFO"
+                      airport_code: "SFO"
+                      image: https://testimages.com/SFO
+                    - id: "SIN"
+                      airport_code: "SIN"
+                      image: https://testimages.com/SIN
+
+components:
+  schemas:
+    Destination:
+      type: object
+      description: Represents a destination city & airport.
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the airport.
+          example: "SFO"
+        city:
+          type: string
+          description: City name for the destination.
+          example: "San Francisco"
+        image:
+          type: string
+          description: Image link for the destination.
+          example: https://testimages.com/SFO
+       
+      required:
+        - id
+        - city
+        - image
+      example:
+        id: "SFO"
+        destination: "San Francisco"
+        image: https://testimages.com/SFO
