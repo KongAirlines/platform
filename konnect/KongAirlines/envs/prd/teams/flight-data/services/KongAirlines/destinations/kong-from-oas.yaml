@@ -1,0 +1,43 @@
+_format_version: "3.0"
+services:
+- host: api.kong-air.com
+  id: 719016ce-90fb-5f0a-a8b7-c5344e1b55d7
+  name: destinations-service
+  path: /
+  plugins: []
+  port: 443
+  protocol: https
+  routes:
+  - id: 9c67490a-201e-5c3c-bbfc-fcb865007a49
+    methods:
+    - GET
+    name: destinations-service_getalldestinations
+    paths:
+    - ~/destinations$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  - id: bc9fa598-ff13-5b1c-9748-3ac5a5d50485
+    methods:
+    - GET
+    name: destinations-service_getdestinationbyid
+    paths:
+    - ~/destinations/(?<id>[^#?/]+)$
+    plugins: []
+    regex_priority: 100
+    strip_path: false
+    tags: []
+  - id: 2127f4f6-478c-5722-b28d-8b5624197e7b
+    methods:
+    - GET
+    name: destinations-service_gethealthstatus
+    paths:
+    - ~/health$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  tags:
+  - ko-api-name=destinations
+upstreams: []
