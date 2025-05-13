@@ -10,3 +10,11 @@ teams:
         spec-path: openapi.yaml
         prod-branch-name: main
         dev-branch-name: dev
+      KongAirlines/flights:
+        name: flights
+        git:
+          remote: https://github.com/KongAirlines/flights.git
+        description: Kong Air Flights service provided by the flight-data team
+        spec-path: openapi.yaml
+        prod-branch-name: main
+        dev-branch-name: dev
