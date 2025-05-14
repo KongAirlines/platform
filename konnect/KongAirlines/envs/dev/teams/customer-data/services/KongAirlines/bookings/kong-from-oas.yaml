@@ -1,0 +1,43 @@
+_format_version: "3.0"
+services:
+- host: api.kong-air.com
+  id: 22e1521b-9b91-5d2f-917b-4463066f1aed
+  name: bookings-service
+  path: /
+  plugins: []
+  port: 443
+  protocol: https
+  routes:
+  - id: 9bd2c85f-5d13-5910-838c-9fad63e8a54d
+    methods:
+    - GET
+    name: bookings-service_get-bookings
+    paths:
+    - ~/bookings$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  - id: 4e2f555e-980c-5241-a640-9f0a67ab6693
+    methods:
+    - POST
+    name: bookings-service_post-booking
+    paths:
+    - ~/bookings$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  - id: a9ed0c75-8ed0-5c25-9e46-54f1f2896d49
+    methods:
+    - GET
+    name: bookings-service_bookings-health-check
+    paths:
+    - ~/health$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  tags:
+  - ko-api-name=bookings-dev
+upstreams: []
