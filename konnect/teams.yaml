@@ -2,6 +2,14 @@ teams:
   customer-data:
     description: customer-data
     services:
+      KongAirlines/bookings:
+        name: bookings
+        git:
+          remote: https://github.com/KongAirlines/bookings.git
+        description: Kong Air Booking service. Provided by the customer-data team.
+        spec-path: openapi.yaml
+        prod-branch-name: main
+        dev-branch-name: dev
       KongAirlines/customer:
         name: customer
         git:
