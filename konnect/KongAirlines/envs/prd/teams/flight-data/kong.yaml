@@ -1,0 +1,93 @@
+_format_version: "3.0"
+services:
+- host: api.kong-air.com
+  id: 719016ce-90fb-5f0a-a8b7-c5344e1b55d7
+  name: destinations-service
+  path: /
+  plugins: []
+  port: 443
+  protocol: https
+  routes:
+  - id: 9c67490a-201e-5c3c-bbfc-fcb865007a49
+    methods:
+    - GET
+    name: destinations-service_getalldestinations
+    paths:
+    - ~/destinations$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  - id: bc9fa598-ff13-5b1c-9748-3ac5a5d50485
+    methods:
+    - GET
+    name: destinations-service_getdestinationbyid
+    paths:
+    - ~/destinations/(?<id>[^#?/]+)$
+    plugins: []
+    regex_priority: 100
+    strip_path: false
+    tags: []
+  - id: 2127f4f6-478c-5722-b28d-8b5624197e7b
+    methods:
+    - GET
+    name: destinations-service_gethealthstatus
+    paths:
+    - ~/health$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  tags:
+  - ko-api-name=destinations
+- host: api-2.kong-air.com
+  id: 0cef4d36-9c39-5ac2-9d9f-190d8ea8a252
+  name: flights-service
+  path: /
+  plugins: []
+  port: 443
+  protocol: https
+  routes:
+  - id: 7b2dbd94-ec5b-5ae8-b6d5-4c8b16ce0b06
+    methods:
+    - GET
+    name: flights-service_get-flights
+    paths:
+    - ~/flights$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  - id: 3210c3ed-9976-500d-ac03-07eaac972ad0
+    methods:
+    - GET
+    name: flights-service_get-flight-by-number
+    paths:
+    - ~/flights/(?<flightnumber>[^#?/]+)$
+    plugins: []
+    regex_priority: 100
+    strip_path: false
+    tags: []
+  - id: 08020aa2-6106-59ec-903a-3459e7cbb629
+    methods:
+    - GET
+    name: flights-service_get-flight-details
+    paths:
+    - ~/flights/(?<flightnumber>[^#?/]+)/details$
+    plugins: []
+    regex_priority: 100
+    strip_path: false
+    tags: []
+  - id: 336227fd-579d-5ef2-8abc-a11ff8258425
+    methods:
+    - GET
+    name: flights-service_flights-health-check
+    paths:
+    - ~/health$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags: []
+  tags:
+  - ko-api-name=flights
+upstreams: []
