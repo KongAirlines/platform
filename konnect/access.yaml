@@ -1,0 +1,170 @@
+_defaults:
+  kongctl:
+    namespace: platform-access
+
+organization:
+  system-accounts:
+    - ref: bookings-automation
+      name: kongairlines-bookings-ci
+      teams:
+        - ref: bookings-customer-data-membership
+          team: !lookup {name: customer-data}
+      roles:
+        - ref: bookings-api-creator
+          role_name: Creator
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: bookings-api-admin
+          role_name: Admin
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: bookings-api-publisher
+          role_name: Publisher
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: bookings-portal-viewer
+          role_name: Viewer
+          entity_id: "*"
+          entity_type_name: Portals
+          entity_region: "*"
+        - ref: bookings-auth-strategy-viewer
+          role_name: Viewer
+          entity_id: "*"
+          entity_type_name: Application Auth Strategies
+          entity_region: "*"
+        - ref: bookings-dev-deployer
+          role_name: Deployer
+          entity_id: !lookup {name: customer-data-dev}
+          entity_type_name: Control Planes
+          entity_region: us
+        - ref: bookings-prod-viewer
+          role_name: Viewer
+          entity_id: !lookup {name: kongairlines-prod}
+          entity_type_name: Control Planes
+          entity_region: us
+    - ref: customer-automation
+      name: kongairlines-customer-ci
+      teams:
+        - ref: customer-customer-data-membership
+          team: !lookup {name: customer-data}
+      roles:
+        - ref: customer-api-creator
+          role_name: Creator
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: customer-api-admin
+          role_name: Admin
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: customer-api-publisher
+          role_name: Publisher
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: customer-portal-viewer
+          role_name: Viewer
+          entity_id: "*"
+          entity_type_name: Portals
+          entity_region: "*"
+        - ref: customer-auth-strategy-viewer
+          role_name: Viewer
+          entity_id: "*"
+          entity_type_name: Application Auth Strategies
+          entity_region: "*"
+        - ref: customer-dev-deployer
+          role_name: Deployer
+          entity_id: !lookup {name: customer-data-dev}
+          entity_type_name: Control Planes
+          entity_region: us
+        - ref: customer-prod-viewer
+          role_name: Viewer
+          entity_id: !lookup {name: kongairlines-prod}
+          entity_type_name: Control Planes
+          entity_region: us
+    - ref: destinations-automation
+      name: kongairlines-destinations-ci
+      teams:
+        - ref: destinations-flight-data-membership
+          team: !lookup {name: flight-data}
+      roles:
+        - ref: destinations-api-creator
+          role_name: Creator
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: destinations-api-admin
+          role_name: Admin
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: destinations-api-publisher
+          role_name: Publisher
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: destinations-portal-viewer
+          role_name: Viewer
+          entity_id: "*"
+          entity_type_name: Portals
+          entity_region: "*"
+        - ref: destinations-auth-strategy-viewer
+          role_name: Viewer
+          entity_id: "*"
+          entity_type_name: Application Auth Strategies
+          entity_region: "*"
+        - ref: destinations-dev-deployer
+          role_name: Deployer
+          entity_id: !lookup {name: flight-data-dev}
+          entity_type_name: Control Planes
+          entity_region: us
+        - ref: destinations-prod-viewer
+          role_name: Viewer
+          entity_id: !lookup {name: kongairlines-prod}
+          entity_type_name: Control Planes
+          entity_region: us
+    - ref: flights-automation
+      name: kongairlines-flights-ci
+      teams:
+        - ref: flights-flight-data-membership
+          team: !lookup {name: flight-data}
+      roles:
+        - ref: flights-api-creator
+          role_name: Creator
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: flights-api-admin
+          role_name: Admin
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: flights-api-publisher
+          role_name: Publisher
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: flights-portal-viewer
+          role_name: Viewer
+          entity_id: "*"
+          entity_type_name: Portals
+          entity_region: "*"
+        - ref: flights-auth-strategy-viewer
+          role_name: Viewer
+          entity_id: "*"
+          entity_type_name: Application Auth Strategies
+          entity_region: "*"
+        - ref: flights-dev-deployer
+          role_name: Deployer
+          entity_id: !lookup {name: flight-data-dev}
+          entity_type_name: Control Planes
+          entity_region: us
+        - ref: flights-prod-viewer
+          role_name: Viewer
+          entity_id: !lookup {name: kongairlines-prod}
+          entity_type_name: Control Planes
+          entity_region: us

@@ -1,0 +1,91 @@
+_defaults:
+  kongctl:
+    namespace: platform-foundations
+
+organization:
+  teams:
+    - ref: customer-data-team
+      name: customer-data
+      description: Owns the Bookings and Customer Information APIs.
+      labels:
+        owner: customer-data
+    - ref: flight-data-team
+      name: flight-data
+      description: Owns the Destinations and Flights APIs.
+      labels:
+        owner: flight-data
+
+control_planes:
+  - ref: customer-data-dev
+    name: customer-data-dev
+    description: Development Gateway configuration owned by customer-data.
+    cluster_type: CLUSTER_TYPE_CONTROL_PLANE
+    labels:
+      environment: development
+      owner: customer-data
+  - ref: flight-data-dev
+    name: flight-data-dev
+    description: Development Gateway configuration owned by flight-data.
+    cluster_type: CLUSTER_TYPE_CONTROL_PLANE
+    labels:
+      environment: development
+      owner: flight-data
+  - ref: kongairlines-prod
+    name: kongairlines-prod
+    description: Shared production Gateway governed by the Platform Team.
+    cluster_type: CLUSTER_TYPE_CONTROL_PLANE
+    labels:
+      environment: production
+      owner: platform
+
+application_auth_strategies:
+  - ref: kongairlines-key-auth-dev
+    name: kongairlines-key-auth-dev
+    display_name: KongAirlines Development API Key
+    strategy_type: key_auth
+    configs:
+      key_auth:
+        key_names:
+          - X-API-Key
+    labels:
+      environment: development
+      owner: platform
+  - ref: kongairlines-key-auth-prod
+    name: kongairlines-key-auth-prod
+    display_name: KongAirlines Production API Key
+    strategy_type: key_auth
+    configs:
+      key_auth:
+        key_names:
+          - X-API-Key
+    labels:
+      environment: production
+      owner: platform
+
+portals:
+  - ref: kongairlines-development
+    name: KongAirlines Development
+    display_name: KongAirlines Development
+    description: Private portal for pre-production API consumers.
+    authentication_enabled: true
+    rbac_enabled: true
+    auto_approve_developers: false
+    auto_approve_applications: false
+    default_api_visibility: private
+    default_page_visibility: private
+    labels:
+      environment: development
+      owner: platform
+  - ref: kongairlines-production
+    name: KongAirlines Production
+    display_name: KongAirlines
+    description: Public portal for KongAirlines production APIs.
+    authentication_enabled: true
+    rbac_enabled: false
+    auto_approve_developers: true
+    auto_approve_applications: false
+    default_api_visibility: public
+    default_page_visibility: public
+    labels:
+      environment: production
+      owner: platform

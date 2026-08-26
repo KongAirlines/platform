@@ -1,0 +1,14 @@
+control_planes:
+  - ref: kongairlines-prod
+    _external:
+      selector:
+        matchFields:
+          name: kongairlines-prod
+    _deck:
+      files:
+        - ../gateway/prod/bookings.yaml
+        - ../gateway/prod/customer-information.yaml
+        - ../gateway/prod/destinations.yaml
+        - ../gateway/prod/flights.yaml
+      flags:
+        - --analytics=false

@@ -1,0 +1,5 @@
+source_repository: KongAirlines/destinations
+source_commit: ca05bb0fbadc9c09b717f6139073f1b641b46a77
+sha256: 00d4da3375063b60a119257fcc05a1995f654e15800a9fec1529106987badbca
+deck_version: 1.65.2
+kongctl_version: 1.14.0
