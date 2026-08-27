@@ -9,33 +9,17 @@ repositories.
 
 ## Ownership
 
-The Platform Team owns:
-
-- the `customer-data` and `flight-data` organization teams;
-- the `customer-data-dev`, `flight-data-dev`, and `kongairlines-prod` control
-  planes;
-- the development and production Developer Portals;
-- separate development and production Key Auth application auth strategies;
-- system-account team membership and role assignments; and
-- review and application of the aggregate production Gateway configuration.
-
-The Platform Team does not copy OpenAPI specifications or manage service-owned
-Catalog APIs. There is no Reference Platform registry and no central polling
-workflow.
+The Platform Team manages organization-wide governance and shared runtime
+infrastructure. This includes teams and RBAC, control planes, Developer Portal
+resources, application authentication strategies, and the review and
+application of production Gateway configuration.
 
 ## Desired state
 
-- [`konnect/foundations.yaml`](konnect/foundations.yaml) declares shared teams,
-  control planes, portals, and application auth strategies.
-- [`konnect/access.yaml`](konnect/access.yaml) assigns roles to existing
-  repository-specific system accounts. Account creation, token issuance, and
-  GitHub secret placement remain manual bootstrap steps.
-- [`konnect/production-gateway.yaml`](konnect/production-gateway.yaml) resolves
-  the production control plane and applies all four reviewed decK files in one
-  kongctl `_deck` operation.
-- [`gateway/prod/`](gateway/prod/) contains exact service-repository artifacts.
-  Do not edit these files here; make the change in the owning service and
-  promote it again.
+Start in [`konnect/`](konnect/) for the Platform Team's Konnect desired state
+and [`gateway/prod/`](gateway/prod/) for reviewed production Gateway artifacts.
+The workflows in [`.github/workflows/`](.github/workflows/) validate and apply
+that configuration.
 
 All v1 workflows use `kongctl apply`. Omitted resources are not deleted.
 
