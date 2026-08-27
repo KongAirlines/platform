@@ -1,6 +1,6 @@
 _defaults:
   kongctl:
-    namespace: platform-access
+    namespace: platform
 
 organization:
   system-accounts:

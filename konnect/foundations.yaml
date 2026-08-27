@@ -1,6 +1,6 @@
 _defaults:
   kongctl:
-    namespace: platform-foundations
+    namespace: platform
 
 organization:
   teams:

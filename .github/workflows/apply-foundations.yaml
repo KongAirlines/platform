@@ -31,6 +31,6 @@ jobs:
           KONGCTL_DEFAULT_KONNECT_PAT: ${{ secrets.KONNECT_TOKEN }}
         run: |
           kongctl apply -f konnect/foundations.yaml \
-            --require-namespace platform-foundations
+            --require-namespace platform
           kongctl apply -f konnect/access.yaml \
-            --require-namespace platform-access
+            --require-namespace platform
