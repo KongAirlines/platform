@@ -82,7 +82,7 @@ portals:
     description: Public portal for KongAirlines production APIs.
     authentication_enabled: true
     rbac_enabled: false
-    auto_approve_developers: true
+    auto_approve_developers: false
     auto_approve_applications: false
     default_api_visibility: public
     default_page_visibility: public
