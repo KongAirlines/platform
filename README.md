@@ -32,9 +32,8 @@ applies the combined Gateway state to `kongairlines-prod`. The service team then
 manually applies its production Catalog manifest from that same source commit
 through a protected GitHub Environment.
 
-The kongctl manifests intentionally exercise generalized external lookup and
-control-plane API implementation behavior. The latter depends on
-[Kong/kongctl#1992](https://github.com/Kong/kongctl/pull/1992).
+The kongctl manifests use generalized external lookup and control-plane API
+implementations. Use kongctl 1.14.0 or later when applying them.
 
 ## Security
 
