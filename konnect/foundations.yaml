@@ -9,11 +9,83 @@ organization:
       description: Owns the Bookings and Customer Information APIs.
       labels:
         owner: customer-data
+      roles:
+        - ref: customer-data-api-creator
+          role_name: Creator
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: customer-data-api-admin
+          role_name: Admin
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: customer-data-api-publisher
+          role_name: Publisher
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: customer-data-portal-viewer
+          role_name: Viewer
+          entity_id: "*"
+          entity_type_name: Portals
+          entity_region: "*"
+        - ref: customer-data-auth-strategy-viewer
+          role_name: Viewer
+          entity_id: "*"
+          entity_type_name: Application Auth Strategies
+          entity_region: "*"
+        - ref: customer-data-dev-deployer
+          role_name: Deployer
+          entity_id: !ref customer-data-dev#id
+          entity_type_name: Control Planes
+          entity_region: us
+        - ref: customer-data-prod-viewer
+          role_name: Viewer
+          entity_id: !ref kongairlines-prod#id
+          entity_type_name: Control Planes
+          entity_region: us
     - ref: flight-data-team
       name: flight-data
       description: Owns the Destinations and Flights APIs.
       labels:
         owner: flight-data
+      roles:
+        - ref: flight-data-api-creator
+          role_name: Creator
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: flight-data-api-admin
+          role_name: Admin
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: flight-data-api-publisher
+          role_name: Publisher
+          entity_id: "*"
+          entity_type_name: APIs
+          entity_region: "*"
+        - ref: flight-data-portal-viewer
+          role_name: Viewer
+          entity_id: "*"
+          entity_type_name: Portals
+          entity_region: "*"
+        - ref: flight-data-auth-strategy-viewer
+          role_name: Viewer
+          entity_id: "*"
+          entity_type_name: Application Auth Strategies
+          entity_region: "*"
+        - ref: flight-data-dev-deployer
+          role_name: Deployer
+          entity_id: !ref flight-data-dev#id
+          entity_type_name: Control Planes
+          entity_region: us
+        - ref: flight-data-prod-viewer
+          role_name: Viewer
+          entity_id: !ref kongairlines-prod#id
+          entity_type_name: Control Planes
+          entity_region: us
 
 control_planes:
   - ref: customer-data-dev
