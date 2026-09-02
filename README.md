@@ -25,12 +25,14 @@ All v1 workflows use `kongctl apply`. Omitted resources are not deleted.
 
 ## Production promotion
 
-Each service repository generates and reviews its production candidate, then a
-trusted workflow opens or updates a PR here. The PR records the source
-repository, commit, checksum, and pinned tool versions. Merging a platform PR
-applies the combined Gateway state to `kongairlines-prod`. The service team then
-manually applies its production Catalog manifest from that same source commit
-through a protected GitHub Environment.
+Each service first reviews a release PR that retains the stable OpenAPI
+contract, selects it for production, advances the root development beta, and
+generates the production candidate. After that PR merges, a trusted workflow
+opens or updates a PR here. The PR records the source repository, commit,
+checksum, and pinned tool versions. Merging a platform PR applies the combined
+Gateway state to `kongairlines-prod`. The service team then manually applies
+its production Catalog manifest from that same source commit through a
+protected GitHub Environment.
 
 The kongctl manifests use generalized external lookup and control-plane API
 implementations. Use kongctl 1.14.0 or later when applying them.
