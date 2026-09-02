@@ -1,0 +1,26 @@
+_defaults:
+  kongctl:
+    namespace: platform
+
+organization:
+  system-accounts:
+    - ref: bookings-automation
+      name: kongairlines-bookings-ci
+      teams:
+        - ref: bookings-customer-data-membership
+          team: !lookup {name: customer-data}
+    - ref: customer-automation
+      name: kongairlines-customer-ci
+      teams:
+        - ref: customer-customer-data-membership
+          team: !lookup {name: customer-data}
+    - ref: destinations-automation
+      name: kongairlines-destinations-ci
+      teams:
+        - ref: destinations-flight-data-membership
+          team: !lookup {name: flight-data}
+    - ref: flights-automation
+      name: kongairlines-flights-ci
+      teams:
+        - ref: flights-flight-data-membership
+          team: !lookup {name: flight-data}
