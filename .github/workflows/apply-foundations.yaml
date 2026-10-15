@@ -41,7 +41,8 @@ jobs:
           kongctl apply -f konnect/access.yaml \
             --auto-approve \
             --require-namespace platform
-          # kongctl namespace enforcement currently ignores manifests that
-          # contain only _external resources and _deck steps.
+          # kongctl currently drops file-level namespace defaults when all
+          # parent resources are _external, so enforcement rejects this
+          # otherwise valid _deck-only plan.
           kongctl apply -f konnect/development-gateway.yaml --base-dir . \
             --auto-approve
