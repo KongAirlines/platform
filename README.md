@@ -34,8 +34,9 @@ Gateway state to `kongairlines-prod`. The service team then manually applies
 its production Catalog manifest from that same source commit through a
 protected GitHub Environment.
 
-The kongctl manifests use generalized external lookup and control-plane API
-implementations. Use kongctl 1.14.0 or later when applying them.
+The deployment workflows intentionally install the latest stable kongctl
+release. This keeps the example exercising current supported declarative
+behavior and makes compatibility regressions visible.
 
 ## Security
 
