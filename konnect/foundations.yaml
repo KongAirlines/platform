@@ -40,6 +40,11 @@ organization:
           entity_id: !ref customer-data-dev#id
           entity_type_name: Control Planes
           entity_region: us
+        - ref: customer-data-dev-viewer
+          role_name: Viewer
+          entity_id: !ref customer-data-dev#id
+          entity_type_name: Control Planes
+          entity_region: us
         - ref: customer-data-prod-viewer
           role_name: Viewer
           entity_id: !ref kongairlines-prod#id
@@ -78,6 +83,11 @@ organization:
           entity_region: "*"
         - ref: flight-data-dev-deployer
           role_name: Deployer
+          entity_id: !ref flight-data-dev#id
+          entity_type_name: Control Planes
+          entity_region: us
+        - ref: flight-data-dev-viewer
+          role_name: Viewer
           entity_id: !ref flight-data-dev#id
           entity_type_name: Control Planes
           entity_region: us
