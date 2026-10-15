@@ -11,8 +11,8 @@ repositories.
 
 The Platform Team manages organization-wide governance and shared runtime
 infrastructure. This includes teams and RBAC, control planes, Developer Portal
-resources, application authentication strategies, and the review and
-application of production Gateway configuration.
+resources, application authentication strategies, shared control-plane
+plugins, and the review and application of production Gateway configuration.
 
 ## Desired state
 

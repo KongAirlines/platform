@@ -10,6 +10,7 @@ control_planes:
           name: kongairlines-prod
     _deck:
       files:
+        - ../gateway/prod/ace.yaml
         - ../gateway/prod/bookings.yaml
         - ../gateway/prod/customer-information.yaml
         - ../gateway/prod/destinations.yaml

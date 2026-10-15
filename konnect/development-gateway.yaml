@@ -1,0 +1,25 @@
+_defaults:
+  kongctl:
+    namespace: platform
+
+control_planes:
+  - ref: customer-data-dev
+    _external:
+      selector:
+        matchFields:
+          name: customer-data-dev
+    _deck:
+      files:
+        - ../gateway/dev/ace.yaml
+      flags:
+        - --analytics=false
+  - ref: flight-data-dev
+    _external:
+      selector:
+        matchFields:
+          name: flight-data-dev
+    _deck:
+      files:
+        - ../gateway/dev/ace.yaml
+      flags:
+        - --analytics=false

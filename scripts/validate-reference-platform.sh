@@ -5,16 +5,16 @@ readonly ARTIFACTS=(bookings customer-information destinations flights)
 readonly REPOSITORIES=(bookings customer destinations flights)
 readonly OBSOLETE_PATTERN='koct[l]|konnect-[o]rchestrator|ko-[p]atch'
 
-if grep -H '^plugins:' gateway/prod/*.yaml; then
-  echo "service production state must not declare global plugins" >&2
-  exit 1
-fi
-
 for index in "${!ARTIFACTS[@]}"; do
   artifact="${ARTIFACTS[${index}]}"
   repository="${REPOSITORIES[${index}]}"
   state_file="gateway/prod/${artifact}.yaml"
   provenance_file="gateway/prod/${artifact}.provenance.yaml"
+
+  if grep -H '^plugins:' "${state_file}"; then
+    echo "service production state must not declare global plugins" >&2
+    exit 1
+  fi
 
   expected_repository="$(awk '$1 == "source_repository:" { print $2 }' "${provenance_file}")"
   expected_commit="$(awk '$1 == "source_commit:" { print $2 }' "${provenance_file}")"
@@ -25,6 +25,16 @@ for index in "${!ARTIFACTS[@]}"; do
   [[ "${expected_commit}" =~ ^[0-9a-f]{40}$ ]]
   [[ "${expected_checksum}" == "${actual_checksum}" ]]
 done
+
+grep -Fq 'name: ace' gateway/dev/ace.yaml
+grep -Fq 'match_policy: required' gateway/dev/ace.yaml
+grep -Fq 'name: ace' gateway/prod/ace.yaml
+grep -Fq 'match_policy: required' gateway/prod/ace.yaml
+
+if grep -Eq '^(services|routes|consumers):' gateway/dev/ace.yaml gateway/prod/ace.yaml; then
+  echo "platform ACE state must contain only the global plugin" >&2
+  exit 1
+fi
 
 if grep -ERin "${OBSOLETE_PATTERN}" README.md .github gateway konnect scripts; then
   echo "obsolete Reference Platform tooling is not allowed" >&2

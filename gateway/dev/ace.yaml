@@ -1,0 +1,12 @@
+_format_version: "3.0"
+_info:
+  select_tags:
+    - scope-platform-ace-dev
+plugins:
+  - name: ace
+    config:
+      match_policy: required
+    tags:
+      - env-dev
+      - owner-platform
+      - scope-platform-ace-dev
