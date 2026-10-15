@@ -22,6 +22,8 @@ jobs:
           wrapper: false
       - name: Validate promoted Gateway state
         run: |
+          deck file validate gateway/dev/ace.yaml
+          deck file validate gateway/prod/ace.yaml
           deck file validate gateway/prod/bookings.yaml
           deck file validate gateway/prod/customer-information.yaml
           deck file validate gateway/prod/destinations.yaml
@@ -29,6 +31,7 @@ jobs:
       - name: Validate aggregate rendering
         run: |
           deck file render --format json \
+            gateway/prod/ace.yaml \
             gateway/prod/bookings.yaml \
             gateway/prod/customer-information.yaml \
             gateway/prod/destinations.yaml \
