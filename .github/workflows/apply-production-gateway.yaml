@@ -34,4 +34,6 @@ jobs:
       - name: Apply aggregate production Gateway state
         env:
           KONGCTL_DEFAULT_KONNECT_PAT: ${{ secrets.KONNECT_TOKEN }}
-        run: kongctl apply -f konnect/production-gateway.yaml --base-dir .
+        run: |
+          kongctl apply -f konnect/production-gateway.yaml --base-dir . \
+            --require-namespace platform
