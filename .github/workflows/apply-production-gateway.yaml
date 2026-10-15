@@ -33,6 +33,7 @@ jobs:
         env:
           KONGCTL_DEFAULT_KONNECT_PAT: ${{ secrets.KONNECT_TOKEN }}
         run: |
+          # kongctl namespace enforcement currently ignores manifests that
+          # contain only _external resources and _deck steps.
           kongctl apply -f konnect/production-gateway.yaml --base-dir . \
-            --auto-approve \
-            --require-namespace platform
+            --auto-approve
