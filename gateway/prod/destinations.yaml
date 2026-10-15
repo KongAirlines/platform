@@ -1,0 +1,61 @@
+_format_version: "3.0"
+_info:
+  select_tags:
+  - env-prod
+services:
+- host: api.kong-air.com
+  id: 7d3c1c0e-2f3b-58b1-ba85-466f84767319
+  name: destinations-prod
+  path: /
+  plugins: []
+  port: 443
+  protocol: https
+  routes:
+  - id: 80b1880e-8215-5729-aed1-bc175c04e596
+    methods:
+    - GET
+    name: destinations-prod_getalldestinations
+    paths:
+    - ~/destinations$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags:
+    - env-prod
+    - team-flight-data
+    - owner-destinations
+    - scope-destinations-prod
+  - id: 9576dcbb-0909-58ac-a8dd-eb752a48fde2
+    methods:
+    - GET
+    name: destinations-prod_getdestinationbyid
+    paths:
+    - ~/destinations/(?<id>[^#?/]+)$
+    plugins: []
+    regex_priority: 100
+    strip_path: false
+    tags:
+    - env-prod
+    - team-flight-data
+    - owner-destinations
+    - scope-destinations-prod
+  - id: 76fd1fd0-ff32-5523-866a-063da23c4399
+    methods:
+    - GET
+    name: destinations-prod_gethealthstatus
+    paths:
+    - ~/destinations/health$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags:
+    - env-prod
+    - team-flight-data
+    - owner-destinations
+    - scope-destinations-prod
+  tags:
+  - env-prod
+  - team-flight-data
+  - owner-destinations
+  - scope-destinations-prod
+upstreams: []

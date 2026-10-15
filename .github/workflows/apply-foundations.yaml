@@ -1,0 +1,36 @@
+name: Apply shared Konnect foundations
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - konnect/access.yaml
+      - konnect/foundations.yaml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: platform-foundations
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Install kongctl
+        uses: Kong/setup-kongctl@659d5c2b0f4db2e25d63797035358a22907421db # v1
+        with:
+          kongctl-version: "1.14.0"
+      - name: Apply foundations
+        env:
+          KONGCTL_DEFAULT_KONNECT_PAT: ${{ secrets.KONNECT_TOKEN }}
+        run: |
+          kongctl apply -f konnect/foundations.yaml \
+            --require-namespace platform
+          kongctl apply -f konnect/access.yaml \
+            --require-namespace platform

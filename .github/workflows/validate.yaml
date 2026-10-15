@@ -1,0 +1,38 @@
+name: Validate platform desired state
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/**
+      - gateway/**
+      - konnect/**
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Install decK
+        uses: Kong/setup-deck@6ea0a466ee5826ddb531cbe851ba8e5a77a0e041 # v1
+        with:
+          deck-version: "1.65.2"
+          wrapper: false
+      - name: Validate promoted Gateway state
+        run: |
+          deck file validate gateway/prod/bookings.yaml
+          deck file validate gateway/prod/customer-information.yaml
+          deck file validate gateway/prod/destinations.yaml
+          deck file validate gateway/prod/flights.yaml
+      - name: Validate aggregate rendering
+        run: |
+          deck file render --format json \
+            gateway/prod/bookings.yaml \
+            gateway/prod/customer-information.yaml \
+            gateway/prod/destinations.yaml \
+            gateway/prod/flights.yaml \
+            --output-file "${RUNNER_TEMP}/kongairlines-production-gateway"
+      - name: Validate ownership and provenance
+        run: ./scripts/validate-reference-platform.sh

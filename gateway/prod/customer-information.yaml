@@ -1,0 +1,55 @@
+_format_version: "3.0"
+_info:
+  select_tags:
+  - env-prod
+services:
+- host: api.kong-air.com
+  id: 2ba9f6b4-107e-514b-b5a6-a9c08a1a0d2c
+  name: customer-information-prod
+  path: /
+  plugins:
+  - config:
+      match_policy: required
+    name: ace
+    tags:
+    - env-prod
+    - team-customer-data
+    - owner-customer
+    - scope-customer-information-prod
+  port: 443
+  protocol: https
+  routes:
+  - id: 8c945127-4031-5489-ad10-c3e64cb2f095
+    methods:
+    - GET
+    name: customer-information-prod_get-cust-info
+    paths:
+    - ~/customer$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags:
+    - env-prod
+    - team-customer-data
+    - owner-customer
+    - scope-customer-information-prod
+  - id: 71940d4a-d40d-5e76-8d09-91e2793dbf5a
+    methods:
+    - GET
+    name: customer-information-prod_cust-health-check
+    paths:
+    - ~/customer/health$
+    plugins: []
+    regex_priority: 200
+    strip_path: false
+    tags:
+    - env-prod
+    - team-customer-data
+    - owner-customer
+    - scope-customer-information-prod
+  tags:
+  - env-prod
+  - team-customer-data
+  - owner-customer
+  - scope-customer-information-prod
+upstreams: []

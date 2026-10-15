@@ -1,0 +1,5 @@
+source_repository: KongAirlines/flights
+source_commit: 069aa66c95a2b9486ef33695e585646820f61e10
+sha256: 6d43b5d540e01960a1a4feb272188b27d7f1f803d3e970a6056279738936a475
+deck_version: 1.65.2
+kongctl_version: 1.14.0
