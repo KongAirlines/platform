@@ -1,5 +1,5 @@
 source_repository: KongAirlines/customer
-source_commit: f4564b2e5a57bb483d8d2f0738f09ed99844ccf0
-sha256: fe91b8acf002034da85c5409242c57b6eaea06f6ce0fcc9e3a8c106872c06289
+source_commit: a1380afa40e8bd619ad825a99ea796737c81ce35
+sha256: 1315212ca8a43d1c002786362bced6ac86b314b88f9b53e76a726a6095db6168
 deck_version: 1.65.2
-kongctl_version: 1.14.0
+kongctl_version: 1.20.2
