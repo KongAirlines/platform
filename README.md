@@ -18,21 +18,26 @@ plugins, and the review and application of production Gateway configuration.
 
 Start in [`konnect/`](konnect/) for the Platform Team's Konnect desired state
 and [`gateway/prod/`](gateway/prod/) for reviewed production Gateway artifacts.
-The workflows in [`.github/workflows/`](.github/workflows/) validate and apply
-that configuration.
+The workflows in [`.github/workflows/`](.github/workflows/) validate and synchronize
+that configuration. Successful PR validation maintains a reviewer-facing
+comment with the changed platform files and production Gateway diff.
 
-All v1 workflows use `kongctl apply`. Omitted resources are not deleted.
+The workflows use `kongctl sync` so reviewed desired state reconciles creates,
+updates, and deletions. Konnect resources are isolated by the `platform`
+namespace, while decK select tags scope Gateway deletion to the aggregate or
+shared configuration owned by this repository.
 
 ## Production promotion
 
 Each service first reviews a release PR that retains the stable OpenAPI
 contract, selects it for production, advances the root development beta, and
-generates the production candidate. After that PR merges, a trusted workflow
-opens or updates a PR here. The PR records the source repository, commit,
-checksum, and pinned tool versions. Merging a platform PR applies the combined
-Gateway state to `kongairlines-prod`. The service team then manually applies
-its production Catalog manifest from that same source commit through a
-protected GitHub Environment.
+commits the materialized production candidate. After that PR merges, a trusted
+workflow copies the exact reviewed candidate into a PR here without
+regenerating it. The PR records the source repository, commit, checksum, and
+pinned tool versions. Merging a platform PR synchronizes the combined Gateway
+state to `kongairlines-prod`. The service team then manually synchronizes its
+production Catalog manifest from that same source commit through a protected
+GitHub Environment.
 
 The deployment workflows intentionally install the latest stable kongctl
 release. This keeps the example exercising current supported declarative

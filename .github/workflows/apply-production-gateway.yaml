@@ -1,4 +1,4 @@
-name: Apply production Gateway state
+name: Sync production Gateway state
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  apply:
+  sync:
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -29,12 +29,12 @@ jobs:
         with:
           deck-version: "1.65.2"
           wrapper: false
-      - name: Apply aggregate production Gateway state
+      - name: Sync aggregate production Gateway state
         env:
           KONGCTL_DEFAULT_KONNECT_PAT: ${{ secrets.KONNECT_TOKEN }}
         run: |
           # kongctl currently drops file-level namespace defaults when all
           # parent resources are _external, so enforcement rejects this
           # otherwise valid _deck-only plan.
-          kongctl apply -f konnect/production-gateway.yaml --base-dir . \
+          kongctl sync -f konnect/production-gateway.yaml --base-dir . \
             --auto-approve
