@@ -19,7 +19,8 @@ plugins, and the review and application of production Gateway configuration.
 Start in [`konnect/`](konnect/) for the Platform Team's Konnect desired state
 and [`gateway/prod/`](gateway/prod/) for reviewed production Gateway artifacts.
 The workflows in [`.github/workflows/`](.github/workflows/) validate and synchronize
-that configuration.
+that configuration. Successful PR validation maintains a reviewer-facing
+comment with the changed platform files and production Gateway diff.
 
 The workflows use `kongctl sync` so reviewed desired state reconciles creates,
 updates, and deletions. Konnect resources are isolated by the `platform`

@@ -1,0 +1,123 @@
+name: Summarize platform desired-state review
+
+on:
+  workflow_run:
+    workflows:
+      - Validate platform desired state
+    types:
+      - completed
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: summarize-platform-${{ github.event.workflow_run.pull_requests[0].number }}
+  cancel-in-progress: true
+
+jobs:
+  summarize:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.pull_requests[0].number != null &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm source is the current same-repository PR head
+        id: source
+        env:
+          EXPECTED_SHA: ${{ github.event.workflow_run.head_sha }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+        run: |
+          actual_sha="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" --jq '.head.sha')"
+          head_repository="$(gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" --jq '.head.repo.full_name')"
+          if [[ "${head_repository}" != "${GITHUB_REPOSITORY}" || "${actual_sha}" != "${EXPECTED_SHA}" ]]; then
+            echo "The PR head moved or belongs to a fork; a newer run will summarize it."
+            echo "current=false" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+          echo "current=true" >> "${GITHUB_OUTPUT}"
+          gh api "repos/${GITHUB_REPOSITORY}/pulls/${PR_NUMBER}" --jq '"base_sha=" + .base.sha' >> "${GITHUB_OUTPUT}"
+      - name: Check out validated platform state
+        if: steps.source.outputs.current == 'true'
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+      - name: Build desired-state review
+        if: steps.source.outputs.current == 'true'
+        env:
+          BASE_SHA: ${{ steps.source.outputs.base_sha }}
+          SUMMARY_FILE: ${{ runner.temp }}/desired-state-review.md
+        run: |
+          current_sha="$(git rev-parse HEAD)"
+          short_sha="$(git rev-parse --short HEAD)"
+          gateway_diff="${RUNNER_TEMP}/production-gateway.diff"
+          git diff --no-ext-diff --unified=3 "${BASE_SHA}...${current_sha}" -- \
+            gateway/prod/ > "${gateway_diff}"
+          {
+            echo '<!-- reference-platform-desired-state-review -->'
+            echo '## Platform desired-state review'
+            echo
+            echo "Platform state at \`${short_sha}\` passed validation."
+            echo
+            echo '### Changed platform inputs'
+            echo
+            echo '```text'
+            git diff --name-status "${BASE_SHA}...${current_sha}" -- \
+              gateway/ konnect/ scripts/ .github/workflows/
+            echo '```'
+            echo
+            echo '<details><summary>Production Gateway diff</summary>'
+            echo
+            echo '```diff'
+            if [[ -s "${gateway_diff}" ]]; then
+              sed -n '1,900p' "${gateway_diff}"
+              if [[ "$(wc -l < "${gateway_diff}")" -gt 900 ]]; then
+                echo '... diff truncated after 900 lines; review Files changed for the complete artifacts.'
+              fi
+            else
+              echo '# No production Gateway changes.'
+            fi
+            echo '```'
+            echo
+            echo '</details>'
+            echo
+            echo "> This is the offline, reviewable desired-state diff. The credentialed post-merge workflow produces the live \`kongctl sync\` plan against Konnect."
+            echo
+            echo "[Validation run](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${{ github.event.workflow_run.id }})"
+          } > "${SUMMARY_FILE}"
+          cat "${SUMMARY_FILE}" >> "${GITHUB_STEP_SUMMARY}"
+      - name: Generate review comment token
+        if: steps.source.outputs.current == 'true'
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3
+        with:
+          client-id: ${{ vars.REFERENCE_PLATFORM_APP_CLIENT_ID }}
+          private-key: ${{ secrets.REFERENCE_PLATFORM_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-pull-requests: write
+      - name: Publish desired-state review
+        if: steps.source.outputs.current == 'true'
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+          SUMMARY_FILE: ${{ runner.temp }}/desired-state-review.md
+        run: |
+          jq -n --rawfile body "${SUMMARY_FILE}" '{body: $body}' > "${RUNNER_TEMP}/comment.json"
+          comment_id="$(GH_TOKEN="${APP_TOKEN}" gh api \
+            --paginate "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+            --jq '.[] | select(.user.type == "Bot" and (.body | contains("<!-- reference-platform-desired-state-review -->"))) | .id' \
+            | head -n 1)"
+          if [[ -n "${comment_id}" ]]; then
+            GH_TOKEN="${APP_TOKEN}" gh api --method PATCH \
+              "repos/${GITHUB_REPOSITORY}/issues/comments/${comment_id}" \
+              --input "${RUNNER_TEMP}/comment.json"
+          else
+            GH_TOKEN="${APP_TOKEN}" gh api --method POST \
+              "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+              --input "${RUNNER_TEMP}/comment.json"
+          fi
