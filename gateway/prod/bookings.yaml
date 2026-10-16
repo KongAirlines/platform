@@ -7,15 +7,7 @@ services:
   id: 5c988aec-f4c9-5cd6-9be7-e88d720de160
   name: bookings-prod
   path: /
-  plugins:
-  - config:
-      match_policy: required
-    name: ace
-    tags:
-    - env-prod
-    - team-customer-data
-    - owner-bookings
-    - scope-bookings-prod
+  plugins: []
   port: 443
   protocol: https
   routes:
@@ -39,20 +31,6 @@ services:
     name: bookings-prod_post-booking
     paths:
     - ~/bookings$
-    plugins: []
-    regex_priority: 200
-    strip_path: false
-    tags:
-    - env-prod
-    - team-customer-data
-    - owner-bookings
-    - scope-bookings-prod
-  - id: 40a81074-967e-57da-b70f-a1ddaf0d80fa
-    methods:
-    - GET
-    name: bookings-prod_bookings-health-check
-    paths:
-    - ~/bookings/health$
     plugins: []
     regex_priority: 200
     strip_path: false
