@@ -1,4 +1,4 @@
-name: Apply shared Konnect foundations
+name: Sync shared Konnect foundations
 
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  apply:
+  sync:
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -31,18 +31,18 @@ jobs:
         with:
           deck-version: "1.65.2"
           wrapper: false
-      - name: Apply foundations
+      - name: Sync foundations
         env:
           KONGCTL_DEFAULT_KONNECT_PAT: ${{ secrets.KONNECT_TOKEN }}
         run: |
-          kongctl apply -f konnect/foundations.yaml \
+          kongctl sync -f konnect/foundations.yaml \
             --auto-approve \
             --require-namespace platform
-          kongctl apply -f konnect/access.yaml \
+          kongctl sync -f konnect/access.yaml \
             --auto-approve \
             --require-namespace platform
           # kongctl currently drops file-level namespace defaults when all
           # parent resources are _external, so enforcement rejects this
           # otherwise valid _deck-only plan.
-          kongctl apply -f konnect/development-gateway.yaml --base-dir . \
+          kongctl sync -f konnect/development-gateway.yaml --base-dir . \
             --auto-approve

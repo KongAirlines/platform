@@ -18,18 +18,21 @@ plugins, and the review and application of production Gateway configuration.
 
 Start in [`konnect/`](konnect/) for the Platform Team's Konnect desired state
 and [`gateway/prod/`](gateway/prod/) for reviewed production Gateway artifacts.
-The workflows in [`.github/workflows/`](.github/workflows/) validate and apply
+The workflows in [`.github/workflows/`](.github/workflows/) validate and synchronize
 that configuration.
 
-All v1 workflows use `kongctl apply`. Omitted resources are not deleted.
+The workflows use `kongctl sync` so reviewed desired state reconciles creates,
+updates, and deletions. Konnect resources are isolated by the `platform`
+namespace, while decK select tags scope Gateway deletion to the aggregate or
+shared configuration owned by this repository.
 
 ## Production promotion
 
 Each service first reviews a release PR that retains the stable OpenAPI
 contract, selects it for production, advances the root development beta, and
-generates the production candidate. After that PR merges, a trusted workflow
+generates the production candidate in CI. After that PR merges, a trusted workflow
 opens or updates a PR here. The PR records the source repository, commit,
-checksum, and pinned tool versions. Merging a platform PR applies the combined
+checksum, and pinned tool versions. Merging a platform PR synchronizes the combined
 Gateway state to `kongairlines-prod`. The service team then manually applies
 its production Catalog manifest from that same source commit through a
 protected GitHub Environment.
