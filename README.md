@@ -30,12 +30,13 @@ shared configuration owned by this repository.
 
 Each service first reviews a release PR that retains the stable OpenAPI
 contract, selects it for production, advances the root development beta, and
-generates the production candidate in CI. After that PR merges, a trusted workflow
-opens or updates a PR here. The PR records the source repository, commit,
-checksum, and pinned tool versions. Merging a platform PR synchronizes the combined
-Gateway state to `kongairlines-prod`. The service team then manually applies
-its production Catalog manifest from that same source commit through a
-protected GitHub Environment.
+commits the materialized production candidate. After that PR merges, a trusted
+workflow copies the exact reviewed candidate into a PR here without
+regenerating it. The PR records the source repository, commit, checksum, and
+pinned tool versions. Merging a platform PR synchronizes the combined Gateway
+state to `kongairlines-prod`. The service team then manually synchronizes its
+production Catalog manifest from that same source commit through a protected
+GitHub Environment.
 
 The deployment workflows intentionally install the latest stable kongctl
 release. This keeps the example exercising current supported declarative
