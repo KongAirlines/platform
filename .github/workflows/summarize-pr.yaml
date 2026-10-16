@@ -74,9 +74,10 @@ jobs:
             echo
             echo '```diff'
             if [[ -s "${gateway_diff}" ]]; then
-              sed -n '1,900p' "${gateway_diff}"
-              if [[ "$(wc -l < "${gateway_diff}")" -gt 900 ]]; then
-                echo '... diff truncated after 900 lines; review Files changed for the complete artifacts.'
+              head -c 45000 "${gateway_diff}"
+              echo
+              if [[ "$(wc -c < "${gateway_diff}")" -gt 45000 ]]; then
+                echo '... diff truncated after 45 KB; review Files changed for the complete artifacts.'
               fi
             else
               echo '# No production Gateway changes.'
