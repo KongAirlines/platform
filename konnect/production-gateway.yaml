@@ -11,6 +11,7 @@ control_planes:
     _deck:
       files:
         - ../gateway/prod/ace.yaml
+        - ../gateway/prod/jwt-consumers.yaml
         - ../gateway/prod/bookings.yaml
         - ../gateway/prod/customer-information.yaml
         - ../gateway/prod/destinations.yaml

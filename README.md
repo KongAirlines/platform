@@ -11,7 +11,7 @@ repositories.
 
 The Platform Team manages organization-wide governance and shared runtime
 infrastructure. This includes teams and RBAC, control planes, Developer Portal
-resources, application authentication strategies, shared control-plane
+resources, shared Gateway authentication identities, shared control-plane
 plugins, and the review and application of production Gateway configuration.
 
 ## Desired state
@@ -26,6 +26,29 @@ The workflows use `kongctl sync` so reviewed desired state reconciles creates,
 updates, and deletions. Konnect resources are isolated by the `platform`
 namespace, while decK select tags scope Gateway deletion to the aggregate or
 shared configuration owned by this repository.
+
+## Runtime authentication
+
+Flights and Destinations are public APIs and require no runtime credential.
+Bookings and Customer Information enable the JWT plugin on their Gateway
+Services. The Platform Team declaratively owns the shared Consumers and RS256
+verification credentials; private signing keys never enter Gateway state or
+the repository. A valid token's `iss` claim selects a Consumer, and Kong
+Gateway replaces `X-Consumer-Username` with the authenticated Consumer name
+before proxying to the service. Tokens used by the verification workflow also
+carry `exp`, which the service-owned JWT policies require.
+
+ACE remains a global, `required` policy so only operations represented by APIs
+published from the Catalog are routable. None of these API publications select
+a Dev Portal application authentication strategy: ACE performs operation
+enforcement, JWT protects Bookings and Customer Information, and the two public
+APIs remain credential-free.
+
+The manual **Verify Gateway authentication** workflow exercises public access,
+missing and invalid JWT rejection, valid identity selection, and forged
+`X-Consumer-Username` replacement against a running data plane. Its selected
+GitHub Environment must provide `KONGAIRLINES_JWT_PRIVATE_KEY`; the workflow
+generates a one-hour token without printing or persisting it.
 
 ## Production promotion
 

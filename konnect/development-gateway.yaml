@@ -11,6 +11,7 @@ control_planes:
     _deck:
       files:
         - ../gateway/dev/ace.yaml
+        - ../gateway/dev/jwt-consumers.yaml
       flags:
         - --analytics=false
   - ref: flight-data-dev
