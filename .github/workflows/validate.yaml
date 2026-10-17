@@ -24,7 +24,9 @@ jobs:
       - name: Validate promoted Gateway state
         run: |
           deck file validate gateway/dev/ace.yaml
+          deck file validate gateway/dev/jwt-consumers.yaml
           deck file validate gateway/prod/ace.yaml
+          deck file validate gateway/prod/jwt-consumers.yaml
           deck file validate gateway/prod/bookings.yaml
           deck file validate gateway/prod/customer-information.yaml
           deck file validate gateway/prod/destinations.yaml
@@ -33,6 +35,7 @@ jobs:
         run: |
           deck file render --format json \
             gateway/prod/ace.yaml \
+            gateway/prod/jwt-consumers.yaml \
             gateway/prod/bookings.yaml \
             gateway/prod/customer-information.yaml \
             gateway/prod/destinations.yaml \
@@ -40,5 +43,7 @@ jobs:
             --output-file "${RUNNER_TEMP}/kongairlines-production-gateway"
       - name: Validate ownership and provenance
         run: ./scripts/validate-reference-platform.sh
-      - name: Validate automation helpers
-        run: bash -n scripts/*.sh
+      - name: Validate automation and authentication helpers
+        run: |
+          bash -n scripts/*.sh
+          node --check scripts/sign-example-jwt.js

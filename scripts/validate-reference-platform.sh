@@ -31,6 +31,19 @@ grep -Fq 'match_policy: required' gateway/dev/ace.yaml
 grep -Fq 'name: ace' gateway/prod/ace.yaml
 grep -Fq 'match_policy: required' gateway/prod/ace.yaml
 
+for stage in dev prod; do
+  jwt_file="gateway/${stage}/jwt-consumers.yaml"
+  for username in jhamby jdoe jsmith; do
+    grep -Fq "username: ${username}" "${jwt_file}"
+    grep -Fq "key: kongairlines-${stage}-${username}" "${jwt_file}"
+  done
+  grep -Fq 'algorithm: RS256' "${jwt_file}"
+  if grep -Eq '^[[:space:]]*(private_key|password|token):' "${jwt_file}"; then
+    echo "JWT signing credentials must not be committed" >&2
+    exit 1
+  fi
+done
+
 if grep -Eq '^(services|routes|consumers):' gateway/dev/ace.yaml gateway/prod/ace.yaml; then
   echo "platform ACE state must contain only the global plugin" >&2
   exit 1

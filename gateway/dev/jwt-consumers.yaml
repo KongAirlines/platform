@@ -1,0 +1,56 @@
+_format_version: "3.0"
+_info:
+  select_tags:
+    - scope-platform-jwt-dev
+consumers:
+  - username: jhamby
+    jwt_secrets:
+      - algorithm: RS256
+        key: kongairlines-dev-jhamby
+        secret: not-used-for-rs256-signature-checks
+        rsa_public_key: &kongairlines_jwt_public_key |-
+          -----BEGIN PUBLIC KEY-----
+          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqW71cNfd46CJTN1Y4yJZ
+          E2kp0cNjKxD9qnD6fIIaE3O82i0hLaAt/gQgd83MoauAb8TYL4s5M3E8u1acJFDF
+          ThVZDamCdN7KYYq1TmSViYCncvRhS6ASlsERW9XjrEDOEnAeWonhUczQzFFAaccE
+          MDwXg677LBaMKEHCfUB+h3a4qpFaQ3cQz3VcRjJlwMX9K8e7neUO2FV8X7J5c+75
+          2v3Azf9o1uVmSCWp2Q7lv6xgeaGJjxVQABfFZA1P+ReIUO+zgLpMJPl7uDMWeaOV
+          0KSUvewO/d8tRyQnKuDFoak5eDAUCKTnQSZ2erjCcSdzaM3ERauHW7tH4IGqmN9T
+          uwIDAQAB
+          -----END PUBLIC KEY-----
+        tags:
+          - env-dev
+          - owner-platform
+          - scope-platform-jwt-dev
+    tags:
+      - env-dev
+      - owner-platform
+      - scope-platform-jwt-dev
+  - username: jdoe
+    jwt_secrets:
+      - algorithm: RS256
+        key: kongairlines-dev-jdoe
+        secret: not-used-for-rs256-signature-checks
+        rsa_public_key: *kongairlines_jwt_public_key
+        tags:
+          - env-dev
+          - owner-platform
+          - scope-platform-jwt-dev
+    tags:
+      - env-dev
+      - owner-platform
+      - scope-platform-jwt-dev
+  - username: jsmith
+    jwt_secrets:
+      - algorithm: RS256
+        key: kongairlines-dev-jsmith
+        secret: not-used-for-rs256-signature-checks
+        rsa_public_key: *kongairlines_jwt_public_key
+        tags:
+          - env-dev
+          - owner-platform
+          - scope-platform-jwt-dev
+    tags:
+      - env-dev
+      - owner-platform
+      - scope-platform-jwt-dev

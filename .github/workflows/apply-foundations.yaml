@@ -10,6 +10,7 @@ on:
       - konnect/development-gateway.yaml
       - konnect/foundations.yaml
       - gateway/dev/ace.yaml
+      - gateway/dev/jwt-consumers.yaml
 
 permissions:
   contents: read
