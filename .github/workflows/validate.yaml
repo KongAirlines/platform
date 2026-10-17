@@ -6,6 +6,7 @@ on:
       - .github/workflows/**
       - gateway/**
       - konnect/**
+      - scripts/**
 
 permissions:
   contents: read
@@ -39,3 +40,5 @@ jobs:
             --output-file "${RUNNER_TEMP}/kongairlines-production-gateway"
       - name: Validate ownership and provenance
         run: ./scripts/validate-reference-platform.sh
+      - name: Validate automation helpers
+        run: bash -n scripts/*.sh
