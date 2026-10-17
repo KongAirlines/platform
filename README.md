@@ -35,9 +35,10 @@ commits the materialized production candidate. After that PR merges, a trusted
 workflow copies the exact reviewed candidate into a PR here without
 regenerating it. The PR records the source repository, commit, checksum, and
 pinned tool versions. Merging a platform PR synchronizes the combined Gateway
-state to `kongairlines-prod`. The service team then manually synchronizes its
-production Catalog manifest from that same source commit through a protected
-GitHub Environment.
+state to `kongairlines-prod`. After that succeeds, the platform workflow reads
+the changed provenance and dispatches the owning service's production Catalog
+workflow with the exact source commit. The service-owned workflow still uses
+its own Konnect identity and protected GitHub Environment.
 
 The deployment workflows intentionally install the latest stable kongctl
 release. This keeps the example exercising current supported declarative

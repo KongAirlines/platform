@@ -22,6 +22,8 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 2
       - name: Install kongctl
         uses: Kong/setup-kongctl@659d5c2b0f4db2e25d63797035358a22907421db # v1
       - name: Install decK
@@ -38,3 +40,34 @@ jobs:
           # otherwise valid _deck-only plan.
           kongctl sync -f konnect/production-gateway.yaml --base-dir . \
             --auto-approve
+      - name: Generate Catalog dispatch token
+        if: github.event_name == 'push'
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3
+        with:
+          client-id: ${{ vars.REFERENCE_PLATFORM_APP_CLIENT_ID }}
+          private-key: ${{ secrets.REFERENCE_PLATFORM_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: |
+            bookings
+            customer
+            destinations
+            flights
+          permission-actions: write
+      - name: Dispatch production Catalog synchronization
+        if: github.event_name == 'push'
+        env:
+          BASE_SHA: ${{ github.event.before }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          while IFS=$'\t' read -r repository source_commit; do
+            [[ -n "${repository}" ]] || continue
+            gh workflow run apply-prod-catalog.yaml \
+              --repo "${repository}" \
+              --ref main \
+              -f "source_commit=${source_commit}"
+            echo "- Dispatched ${repository}@${source_commit}" >> "${GITHUB_STEP_SUMMARY}"
+          done < <(
+            ./scripts/list-production-catalog-dispatches.sh \
+              "${BASE_SHA}" "${GITHUB_SHA}"
+          )
