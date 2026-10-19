@@ -39,7 +39,9 @@ jobs:
           kongctl sync -f konnect/foundations.yaml \
             --auto-approve \
             --require-namespace platform
-          kongctl sync -f konnect/access.yaml \
+          # Nested system-account memberships selected with !lookup are
+          # incorrectly deleted by sync: https://github.com/Kong/kongctl/issues/2534
+          kongctl apply -f konnect/access.yaml \
             --auto-approve \
             --require-namespace platform
           # kongctl currently drops file-level namespace defaults when all

@@ -31,6 +31,10 @@ grep -Fq 'match_policy: required' gateway/dev/ace.yaml
 grep -Fq 'name: ace' gateway/prod/ace.yaml
 grep -Fq 'match_policy: required' gateway/prod/ace.yaml
 
+grep -Fq 'application_auth_strategies: []' konnect/foundations.yaml
+grep -Fq 'kongctl apply -f konnect/access.yaml' .github/workflows/apply-foundations.yaml
+grep -Fq 'Kong/kongctl/issues/2534' .github/workflows/apply-foundations.yaml
+
 for stage in dev prod; do
   jwt_file="gateway/${stage}/jwt-consumers.yaml"
   for username in jhamby jdoe jsmith; do

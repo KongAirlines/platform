@@ -100,6 +100,8 @@ control_planes:
       environment: production
       owner: platform
 
+application_auth_strategies: []
+
 portals:
   - ref: kongairlines-development
     name: KongAirlines Development
