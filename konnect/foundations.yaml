@@ -30,11 +30,6 @@ organization:
           entity_id: "*"
           entity_type_name: Portals
           entity_region: "*"
-        - ref: customer-data-auth-strategy-viewer
-          role_name: Viewer
-          entity_id: "*"
-          entity_type_name: Application Auth Strategies
-          entity_region: "*"
         - ref: customer-data-dev-deployer
           role_name: Deployer
           entity_id: !ref customer-data-dev#id
@@ -71,11 +66,6 @@ organization:
           entity_id: "*"
           entity_type_name: Portals
           entity_region: "*"
-        - ref: flight-data-auth-strategy-viewer
-          role_name: Viewer
-          entity_id: "*"
-          entity_type_name: Application Auth Strategies
-          entity_region: "*"
         - ref: flight-data-dev-deployer
           role_name: Deployer
           entity_id: !ref flight-data-dev#id
@@ -106,30 +96,6 @@ control_planes:
     name: kongairlines-prod
     description: Shared production Gateway governed by the Platform Team.
     cluster_type: CLUSTER_TYPE_CONTROL_PLANE
-    labels:
-      environment: production
-      owner: platform
-
-application_auth_strategies:
-  - ref: kongairlines-key-auth-dev
-    name: kongairlines-key-auth-dev
-    display_name: KongAirlines Development API Key
-    strategy_type: key_auth
-    configs:
-      key_auth:
-        key_names:
-          - X-API-Key
-    labels:
-      environment: development
-      owner: platform
-  - ref: kongairlines-key-auth-prod
-    name: kongairlines-key-auth-prod
-    display_name: KongAirlines Production API Key
-    strategy_type: key_auth
-    configs:
-      key_auth:
-        key_names:
-          - X-API-Key
     labels:
       environment: production
       owner: platform
