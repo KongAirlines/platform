@@ -1,71 +1,59 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-: "${KONGAIRLINES_GATEWAY_URL:?set KONGAIRLINES_GATEWAY_URL}"
-: "${KONGAIRLINES_JWT_JHAMBY:?set KONGAIRLINES_JWT_JHAMBY}"
-
-readonly BASE_URL="${KONGAIRLINES_GATEWAY_URL%/}"
+: "${KONGAIRLINES_GATEWAY_URL:?set the reachable Gateway proxy URL}"
+: "${KONGAIRLINES_TEST_API_KEY:?set an approved Portal application API key}"
+base_url="${KONGAIRLINES_GATEWAY_URL%/}"
 work_dir="$(mktemp -d)"
 trap 'rm -rf "${work_dir}"' EXIT
 
-request_status() {
-  local output_file="$1"
-  shift
-  curl --silent --show-error --output "${output_file}" --write-out '%{http_code}' "$@"
-}
-
-assert_status() {
-  local expected="$1"
-  local actual="$2"
-  local description="$3"
+check() {
+  local expected="$1" label="$2" endpoint="$3"
+  shift 3
+  local actual
+  actual="$(curl --silent --show-error --max-time 30 --output "${work_dir}/response.json" \
+    --write-out '%{http_code}' "$@" "${base_url}${endpoint}")"
   if [[ "${actual}" != "${expected}" ]]; then
-    echo "${description}: expected HTTP ${expected}, got ${actual}" >&2
+    echo "${label}: expected ${expected}, got ${actual}" >&2
     exit 1
   fi
+  echo "PASS ${label}"
 }
 
-assert_success() {
-  local actual="$1"
-  local description="$2"
-  if [[ ! "${actual}" =~ ^2[0-9][0-9]$ ]]; then
-    echo "${description}: expected a successful response, got HTTP ${actual}" >&2
-    exit 1
-  fi
-}
-
-status="$(request_status "${work_dir}/flights.json" "${BASE_URL}/flights")"
-assert_success "${status}" "Flights without credentials"
-
-status="$(request_status "${work_dir}/destinations.json" "${BASE_URL}/destinations/SFO")"
-assert_success "${status}" "Destinations without credentials"
-
-for path in bookings customer; do
-  status="$(request_status "${work_dir}/${path}-missing.json" "${BASE_URL}/${path}")"
-  assert_status 401 "${status}" "${path} without JWT"
-
-  status="$(request_status "${work_dir}/${path}-invalid.json" \
-    --header 'Authorization: Bearer invalid.jwt.value' \
-    "${BASE_URL}/${path}")"
-  assert_status 401 "${status}" "${path} with invalid JWT"
+for endpoint in flights destinations; do
+  check 200 "${endpoint} without credentials" "/${endpoint}"
 done
+for endpoint in bookings customer; do
+  check 401 "${endpoint} without credentials" "/${endpoint}"
+  check 401 "${endpoint} with invalid key" "/${endpoint}" --header 'X-API-Key: invalid-test-key'
+  check 401 "${endpoint} with forged identity only" "/${endpoint}" \
+    --header 'X-KongAir-Account-ID: 11111111-1111-4111-8111-111111111111' \
+    --header 'X-Consumer-Username: jdoe'
+  check 200 "${endpoint} with approved application" "/${endpoint}" \
+    --header "X-API-Key: ${KONGAIRLINES_TEST_API_KEY}"
+done
+account_id="$(jq -er '.id | select(test("^[0-9a-f-]{36}$"))' "${work_dir}/response.json")"
+check 200 "forged account cannot replace authenticated application" /customer \
+  --header "X-API-Key: ${KONGAIRLINES_TEST_API_KEY}" \
+  --header 'X-KongAir-Account-ID: 11111111-1111-4111-8111-111111111111' \
+  --header 'X-Consumer-Username: jdoe'
+jq -e --arg account "${account_id}" '.id == $account' "${work_dir}/response.json" >/dev/null
 
-status="$(request_status "${work_dir}/bookings-valid.json" \
-  --header "Authorization: Bearer ${KONGAIRLINES_JWT_JHAMBY}" \
-  "${BASE_URL}/bookings")"
-assert_status 200 "${status}" "Bookings with valid JWT"
-jq -e 'type == "array"' "${work_dir}/bookings-valid.json" >/dev/null
-
-status="$(request_status "${work_dir}/customer-valid.json" \
-  --header "Authorization: Bearer ${KONGAIRLINES_JWT_JHAMBY}" \
-  "${BASE_URL}/customer")"
-assert_status 200 "${status}" "Customer with valid JWT"
-jq -e '.username == "jhamby"' "${work_dir}/customer-valid.json" >/dev/null
-
-status="$(request_status "${work_dir}/customer-forged.json" \
-  --header "Authorization: Bearer ${KONGAIRLINES_JWT_JHAMBY}" \
-  --header 'X-Consumer-Username: jdoe' \
-  "${BASE_URL}/customer")"
-assert_status 200 "${status}" "Customer with forged identity header"
-jq -e '.username == "jhamby"' "${work_dir}/customer-forged.json" >/dev/null
-
-echo "Gateway authentication checks passed."
+if [[ -n "${KONGAIRLINES_SECOND_API_KEY:-}" ]]; then
+  check 200 "first application bookings" /bookings --header "X-API-Key: ${KONGAIRLINES_TEST_API_KEY}"
+  ticket="$(jq -er '.[0].ticket_number' "${work_dir}/response.json")"
+  check 200 "second application customer" /customer --header "X-API-Key: ${KONGAIRLINES_SECOND_API_KEY}"
+  jq -e --arg account "${account_id}" '.id != $account' "${work_dir}/response.json" >/dev/null
+  check 404 "second application cannot read first application booking" "/bookings/${ticket}" \
+    --header "X-API-Key: ${KONGAIRLINES_SECOND_API_KEY}"
+else
+  echo "SKIP two-application isolation: KONGAIRLINES_SECOND_API_KEY is not set"
+fi
+if [[ -n "${KONGAIRLINES_UNREGISTERED_API_KEY:-}" ]]; then
+  for endpoint in bookings customer; do
+    check 401 "${endpoint} rejects an unregistered application key" "/${endpoint}" \
+      --header "X-API-Key: ${KONGAIRLINES_UNREGISTERED_API_KEY}"
+  done
+else
+  echo "SKIP unregistered application: KONGAIRLINES_UNREGISTERED_API_KEY is not set"
+fi

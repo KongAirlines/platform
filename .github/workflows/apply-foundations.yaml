@@ -6,6 +6,7 @@ on:
     branches:
       - main
     paths:
+      - .github/workflows/apply-foundations.yaml
       - konnect/access.yaml
       - konnect/development-gateway.yaml
       - konnect/foundations.yaml

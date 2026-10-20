@@ -29,26 +29,35 @@ shared configuration owned by this repository.
 
 ## Runtime authentication
 
-Flights and Destinations are public APIs and require no runtime credential.
-Bookings and Customer Information enable the JWT plugin on their Gateway
-Services. The Platform Team declaratively owns the shared Consumers and RS256
-verification credentials; private signing keys never enter Gateway state or
-the repository. A valid token's `iss` claim selects a Consumer, and Kong
-Gateway replaces `X-Consumer-Username` with the authenticated Consumer name
-before proxying to the service. Tokens used by the verification workflow also
-carry `exp`, which the service-owned JWT policies require.
+Flights and Destinations are public and require no credential. Bookings and
+Customer Information require an API key from a Dev Portal application with an
+approved registration for the API. The platform owns a Key Auth application
+strategy per environment, the anonymous Consumer, and global ACE configured
+with `match_policy: required` and `anonymous: kongairlines-anonymous`.
 
-ACE remains a global, `required` policy so only operations represented by APIs
-published from the Catalog are routable. None of these API publications select
-a Dev Portal application authentication strategy: ACE performs operation
-enforcement, JWT protects Bookings and Customer Information, and the two public
-APIs remain credential-free.
+Service-owned post-functions run after ACE. They reject its anonymous fallback
+and requests without a resolved application principal. Successful requests
+receive `X-KongAir-Account-ID` from the principal ID, replacing any supplied
+account header and removing the legacy passenger header and API key upstream.
+Each application gets an isolated synthetic customer and bookings account;
+this is application authorization, not passenger login.
 
-The manual **Verify Gateway authentication** workflow exercises public access,
-missing and invalid JWT rejection, valid identity selection, and forged
-`X-Consumer-Username` replacement against a running data plane. Its selected
-GitHub Environment must provide `KONGAIRLINES_JWT_PRIVATE_KEY`; the workflow
-generates a one-hour token without printing or persisting it.
+Developers sign up, create an application, request access, and generate API
+keys through Dev Portal. Developer and application approvals remain manual.
+A public documentation page does not grant runtime access. API keys are
+runtime secrets and never belong in manifests or PRs.
+
+The manual **Verify Gateway authentication** workflow accepts a reachable
+proxy URL and uses `KONGAIRLINES_TEST_API_KEY` from the selected GitHub
+Environment. Optional `KONGAIRLINES_SECOND_API_KEY` and
+`KONGAIRLINES_UNREGISTERED_API_KEY` extend verification to account isolation
+and unapproved registrations. A GitHub-hosted runner cannot reach a developer's
+localhost; use `scripts/verify-gateway-auth.sh` locally for that case.
+
+The legacy JWT Consumers remain only during the rolling migration so existing
+Gateway artifacts continue to function until both service promotions finish.
+Remove their manifests and `KONGAIRLINES_JWT_PRIVATE_KEY` environment secrets
+after that rollout. No new JWT credential provisioning is required.
 
 ## Production promotion
 

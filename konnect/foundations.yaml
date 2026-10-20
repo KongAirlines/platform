@@ -30,6 +30,11 @@ organization:
           entity_id: "*"
           entity_type_name: Portals
           entity_region: "*"
+        - ref: customer-data-auth-strategy-viewer
+          role_name: Viewer
+          entity_id: "*"
+          entity_type_name: Application Auth Strategies
+          entity_region: "*"
         - ref: customer-data-dev-deployer
           role_name: Deployer
           entity_id: !ref customer-data-dev#id
@@ -66,6 +71,11 @@ organization:
           entity_id: "*"
           entity_type_name: Portals
           entity_region: "*"
+        - ref: flight-data-auth-strategy-viewer
+          role_name: Viewer
+          entity_id: "*"
+          entity_type_name: Application Auth Strategies
+          entity_region: "*"
         - ref: flight-data-dev-deployer
           role_name: Deployer
           entity_id: !ref flight-data-dev#id
@@ -100,11 +110,34 @@ control_planes:
       environment: production
       owner: platform
 
-application_auth_strategies: []
+application_auth_strategies:
+  - ref: kongairlines-key-auth-dev
+    name: kongairlines-key-auth-dev
+    display_name: KongAirlines Development API Key
+    strategy_type: key_auth
+    configs:
+      key_auth:
+        key_names:
+          - X-API-Key
+    labels:
+      environment: development
+      owner: platform
+  - ref: kongairlines-key-auth-prod
+    name: kongairlines-key-auth-prod
+    display_name: KongAirlines Production API Key
+    strategy_type: key_auth
+    configs:
+      key_auth:
+        key_names:
+          - X-API-Key
+    labels:
+      environment: production
+      owner: platform
 
 portals:
   - ref: kongairlines-development
     name: KongAirlines Development
+    default_application_auth_strategy_id: !ref kongairlines-key-auth-dev#id
     display_name: KongAirlines Development
     description: Private portal for pre-production API consumers.
     authentication_enabled: true
@@ -118,6 +151,7 @@ portals:
       owner: platform
   - ref: kongairlines-production
     name: KongAirlines Production
+    default_application_auth_strategy_id: !ref kongairlines-key-auth-prod#id
     display_name: KongAirlines
     description: Public portal for KongAirlines production APIs.
     authentication_enabled: true
