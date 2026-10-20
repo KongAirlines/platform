@@ -36,8 +36,8 @@ strategy per environment, the anonymous Consumer, and global ACE configured
 with `match_policy: required` and `anonymous: kongairlines-anonymous`.
 
 Service-owned post-functions run after ACE. They reject its anonymous fallback
-and requests without a resolved application principal. Successful requests
-receive `X-KongAir-Account-ID` from the principal ID, replacing any supplied
+and requests without an application ID in ACE's request context. Successful requests
+receive `X-KongAir-Account-ID` from that ID, replacing any supplied
 account header and removing the legacy passenger header and API key upstream.
 Each application gets an isolated synthetic customer and bookings account;
 this is application authorization, not passenger login.
@@ -51,7 +51,8 @@ The manual **Verify Gateway authentication** workflow accepts a reachable
 proxy URL and uses `KONGAIRLINES_TEST_API_KEY` from the selected GitHub
 Environment. Optional `KONGAIRLINES_SECOND_API_KEY` and
 `KONGAIRLINES_UNREGISTERED_API_KEY` extend verification to account isolation
-and unapproved registrations. A GitHub-hosted runner cannot reach a developer's
+and unapproved registrations. `KONGAIRLINES_ROTATED_API_KEY` checks that a new
+key for the first application preserves its account. A GitHub-hosted runner cannot reach a developer's
 localhost; use `scripts/verify-gateway-auth.sh` locally for that case.
 
 The legacy JWT Consumers remain only during the rolling migration so existing

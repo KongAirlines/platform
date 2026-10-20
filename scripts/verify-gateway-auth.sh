@@ -51,9 +51,16 @@ else
 fi
 if [[ -n "${KONGAIRLINES_UNREGISTERED_API_KEY:-}" ]]; then
   for endpoint in bookings customer; do
-    check 401 "${endpoint} rejects an unregistered application key" "/${endpoint}" \
+    check 403 "${endpoint} rejects an unregistered application key" "/${endpoint}" \
       --header "X-API-Key: ${KONGAIRLINES_UNREGISTERED_API_KEY}"
   done
 else
   echo "SKIP unregistered application: KONGAIRLINES_UNREGISTERED_API_KEY is not set"
+fi
+if [[ -n "${KONGAIRLINES_ROTATED_API_KEY:-}" ]]; then
+  check 200 "rotated key preserves the application account" /customer \
+    --header "X-API-Key: ${KONGAIRLINES_ROTATED_API_KEY}"
+  jq -e --arg account "${account_id}" '.id == $account' "${work_dir}/response.json" >/dev/null
+else
+  echo "SKIP key rotation: KONGAIRLINES_ROTATED_API_KEY is not set"
 fi

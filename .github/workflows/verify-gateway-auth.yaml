@@ -29,6 +29,7 @@ jobs:
           KONGAIRLINES_TEST_API_KEY: ${{ secrets.KONGAIRLINES_TEST_API_KEY }}
           KONGAIRLINES_SECOND_API_KEY: ${{ secrets.KONGAIRLINES_SECOND_API_KEY }}
           KONGAIRLINES_UNREGISTERED_API_KEY: ${{ secrets.KONGAIRLINES_UNREGISTERED_API_KEY }}
+          KONGAIRLINES_ROTATED_API_KEY: ${{ secrets.KONGAIRLINES_ROTATED_API_KEY }}
           KONGAIRLINES_GATEWAY_URL: ${{ inputs.gateway_url }}
         run: |
           ./scripts/verify-gateway-auth.sh
