@@ -2,10 +2,17 @@ _format_version: "3.0"
 _info:
   select_tags:
     - scope-platform-ace-dev
+consumers:
+  - username: kongairlines-anonymous
+    tags:
+      - env-dev
+      - owner-platform
+      - scope-platform-ace-dev
 plugins:
   - name: ace
     config:
       match_policy: required
+      anonymous: kongairlines-anonymous
     tags:
       - env-dev
       - owner-platform

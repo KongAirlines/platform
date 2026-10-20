@@ -24,26 +24,12 @@ jobs:
     environment: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - name: Generate a short-lived example JWT and verify behavior
+      - name: Verify Portal application access and demo account isolation
         env:
-          JWT_PRIVATE_KEY: ${{ secrets.KONGAIRLINES_JWT_PRIVATE_KEY }}
+          KONGAIRLINES_TEST_API_KEY: ${{ secrets.KONGAIRLINES_TEST_API_KEY }}
+          KONGAIRLINES_SECOND_API_KEY: ${{ secrets.KONGAIRLINES_SECOND_API_KEY }}
+          KONGAIRLINES_UNREGISTERED_API_KEY: ${{ secrets.KONGAIRLINES_UNREGISTERED_API_KEY }}
+          KONGAIRLINES_ROTATED_API_KEY: ${{ secrets.KONGAIRLINES_ROTATED_API_KEY }}
           KONGAIRLINES_GATEWAY_URL: ${{ inputs.gateway_url }}
-          TARGET_ENVIRONMENT: ${{ inputs.environment }}
         run: |
-          if [[ -z "${JWT_PRIVATE_KEY}" ]]; then
-            echo "KONGAIRLINES_JWT_PRIVATE_KEY is not configured in ${TARGET_ENVIRONMENT}." >&2
-            exit 1
-          fi
-          case "${TARGET_ENVIRONMENT}" in
-            development) issuer_environment=dev ;;
-            production) issuer_environment=prod ;;
-            *) echo "unsupported environment: ${TARGET_ENVIRONMENT}" >&2; exit 1 ;;
-          esac
-          private_key="${RUNNER_TEMP}/kongairlines-jwt-private.pem"
-          umask 077
-          printf '%s' "${JWT_PRIVATE_KEY}" > "${private_key}"
-          trap 'rm -f "${private_key}"' EXIT
-          KONGAIRLINES_JWT_JHAMBY="$(node scripts/sign-example-jwt.js \
-            "${issuer_environment}" jhamby "${private_key}")"
-          export KONGAIRLINES_JWT_JHAMBY
           ./scripts/verify-gateway-auth.sh

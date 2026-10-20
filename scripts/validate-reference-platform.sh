@@ -31,7 +31,10 @@ grep -Fq 'match_policy: required' gateway/dev/ace.yaml
 grep -Fq 'name: ace' gateway/prod/ace.yaml
 grep -Fq 'match_policy: required' gateway/prod/ace.yaml
 
-grep -Fq 'application_auth_strategies: []' konnect/foundations.yaml
+grep -Fq 'name: kongairlines-key-auth-dev' konnect/foundations.yaml
+grep -Fq 'name: kongairlines-key-auth-prod' konnect/foundations.yaml
+grep -Fq 'anonymous: kongairlines-anonymous' gateway/dev/ace.yaml
+grep -Fq 'anonymous: kongairlines-anonymous' gateway/prod/ace.yaml
 grep -Fq 'kongctl apply -f konnect/access.yaml' .github/workflows/apply-foundations.yaml
 grep -Fq 'Kong/kongctl/issues/2534' .github/workflows/apply-foundations.yaml
 
@@ -48,8 +51,8 @@ for stage in dev prod; do
   fi
 done
 
-if grep -Eq '^(services|routes|consumers):' gateway/dev/ace.yaml gateway/prod/ace.yaml; then
-  echo "platform ACE state must contain only the global plugin" >&2
+if grep -Eq '^(services|routes):' gateway/dev/ace.yaml gateway/prod/ace.yaml; then
+  echo "platform ACE state must contain only the global plugin and anonymous Consumer" >&2
   exit 1
 fi
 
