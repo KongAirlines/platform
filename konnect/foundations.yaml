@@ -151,6 +151,62 @@ portals:
       ref: kongairlines-development-branding
       css: !file branding/portal.css
       theme: !file branding/theme.json
+      menu: !file portal/menu.json
+    pages:
+      - ref: development-page-home
+        slug: "/"
+        title: Welcome to KongAir
+        visibility: private
+        status: published
+        content: !file portal/pages/home.md
+      - ref: development-page-apis
+        slug: "apis"
+        title: API catalog
+        visibility: private
+        status: published
+        content: !file portal/pages/apis.md
+      - ref: development-page-guides
+        slug: "guides"
+        title: Developer guides
+        visibility: private
+        status: published
+        content: !file portal/pages/guides.md
+        children:
+          - ref: development-guide-getting-started
+            slug: getting-started
+            title: Getting started
+            visibility: private
+            status: published
+            content: !file portal/pages/guides/getting-started.md
+          - ref: development-guide-application-access
+            slug: application-access
+            title: Application access
+            visibility: private
+            status: published
+            content: !file portal/pages/guides/application-access.md
+          - ref: development-guide-environments
+            slug: environments
+            title: Environments and versions
+            visibility: private
+            status: published
+            content: !file portal/pages/guides/environments.md
+      - ref: development-page-about
+        slug: "about"
+        title: About KongAir
+        visibility: private
+        status: published
+        content: !file portal/pages/about.md
+    snippets:
+      - ref: development-guides-navigation
+        name: guides-navigation
+        visibility: private
+        status: published
+        content: !file portal/snippets/guides-navigation.md
+      - ref: development-guides-sections
+        name: guides-sections
+        visibility: private
+        status: published
+        content: !file portal/snippets/guides-sections.md
     labels:
       environment: development
       owner: platform
@@ -170,6 +226,62 @@ portals:
       ref: kongairlines-production-branding
       css: !file branding/portal.css
       theme: !file branding/theme.json
+      menu: !file portal/menu.json
+    pages:
+      - ref: production-page-home
+        slug: "/"
+        title: Welcome to KongAir
+        visibility: public
+        status: published
+        content: !file portal/pages/home.md
+      - ref: production-page-apis
+        slug: "apis"
+        title: API catalog
+        visibility: public
+        status: published
+        content: !file portal/pages/apis.md
+      - ref: production-page-guides
+        slug: "guides"
+        title: Developer guides
+        visibility: public
+        status: published
+        content: !file portal/pages/guides.md
+        children:
+          - ref: production-guide-getting-started
+            slug: getting-started
+            title: Getting started
+            visibility: public
+            status: published
+            content: !file portal/pages/guides/getting-started.md
+          - ref: production-guide-application-access
+            slug: application-access
+            title: Application access
+            visibility: public
+            status: published
+            content: !file portal/pages/guides/application-access.md
+          - ref: production-guide-environments
+            slug: environments
+            title: Environments and versions
+            visibility: public
+            status: published
+            content: !file portal/pages/guides/environments.md
+      - ref: production-page-about
+        slug: "about"
+        title: About KongAir
+        visibility: public
+        status: published
+        content: !file portal/pages/about.md
+    snippets:
+      - ref: production-guides-navigation
+        name: guides-navigation
+        visibility: public
+        status: published
+        content: !file portal/snippets/guides-navigation.md
+      - ref: production-guides-sections
+        name: guides-sections
+        visibility: public
+        status: published
+        content: !file portal/snippets/guides-sections.md
     labels:
       environment: production
       owner: platform

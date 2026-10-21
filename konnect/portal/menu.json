@@ -1,0 +1,21 @@
+{
+  "main": [
+    { "title": "Home", "path": "/", "external": false, "visibility": "public" },
+    { "title": "APIs", "path": "/apis", "external": false, "visibility": "public" },
+    { "title": "Guides", "path": "/guides", "external": false, "visibility": "public" },
+    { "title": "About KongAir", "path": "/about", "external": false, "visibility": "public" }
+  ],
+  "footer_sections": [
+    {
+      "title": "Build with KongAir",
+      "items": [
+        { "title": "Explore APIs", "path": "/apis", "external": false, "visibility": "public" },
+        { "title": "Get started", "path": "/guides/getting-started", "external": false, "visibility": "public" },
+        { "title": "Application access", "path": "/guides/application-access", "external": false, "visibility": "public" }
+      ]
+    }
+  ],
+  "footer_bottom": [
+    { "title": "Konnect Reference Platform", "path": "https://developer.konghq.com/konnect-reference-platform/", "external": true, "visibility": "public" }
+  ]
+}

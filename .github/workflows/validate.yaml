@@ -48,3 +48,4 @@ jobs:
           bash -n scripts/*.sh
           node --check scripts/sign-example-jwt.js
           node scripts/validate-portal-branding.js
+          ruby scripts/validate-portal-content.rb
