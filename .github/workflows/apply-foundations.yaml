@@ -10,6 +10,7 @@ on:
       - konnect/access.yaml
       - konnect/development-gateway.yaml
       - konnect/foundations.yaml
+      - konnect/branding/**
       - gateway/dev/ace.yaml
       - gateway/dev/jwt-consumers.yaml
 

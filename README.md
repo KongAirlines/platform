@@ -27,6 +27,18 @@ updates, and deletions. Konnect resources are isolated by the `platform`
 namespace, while decK select tags scope Gateway deletion to the aggregate or
 shared configuration owned by this repository.
 
+## Shared Portal branding
+
+Both Portals reference the same files in [`konnect/branding/`](konnect/branding/)
+using kongctl's `!file` support. Edit `portal.css` for custom styling,
+`theme.json` for theme colors, and `assets.json` for the logo and favicon data
+URLs. A single change updates development and production through the shared
+foundations workflow, with its normal production approval.
+
+The branding is taken from the KongAir public Portal export. Each Portal keeps
+its own customization reference and access settings. Navigation, pages, domains,
+and authentication are managed separately from the shared branding.
+
 ## Runtime authentication
 
 Flights and Destinations are public and require no credential. Bookings and

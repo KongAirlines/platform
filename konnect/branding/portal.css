@@ -1,0 +1,81 @@
+body {
+  background-color: #F9FAFB;
+}
+
+header {
+  box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.08);
+}
+
+.app-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  background-color: #fff;
+  background: #FFF;
+  box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.08);
+}
+
+.k-card.api-card {
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0px 0px 90px 0px rgba(0, 0, 0, 0.05);
+  padding: 32px;
+  border: none;
+}
+
+.kui-icon.dev-portal-icon {
+  color: #254E7A !important;
+}
+
+.layout-menu-header ul li {
+  --kui-color-border-primary: #254E7A;
+}
+
+.layout-header {
+  background-color: white !important;
+}
+
+.layout-menu-header a {
+  --kui-color-text-inverse: #254E7A;
+}
+
+.k-button {
+  --kui-color-background-primary: #2ABDBB;
+  border-radius: 32px !important;
+
+}
+
+.k-button:hover {
+  transform: scale(1.05);
+  transition: all 0.3s ease-out;
+}
+
+.k-button.large {
+  padding: 10px 20px !important;
+  transition: all 0.3s ease-out;
+}
+
+.k-button.primary,
+.k-button.primary:hover {
+  background: linear-gradient(75deg, rgb(42, 69, 189) 22%, rgba(35, 43, 101, 1) 100%);
+  background-repeat: no-repeat;
+  border: 0px !important;
+  --kui-color-border-primary: #2ABDBB;
+}
+
+.k-button.secondary,
+.k-button.secondary:hover {
+  --kui-color-text-primary: #266F8D;
+  --kui-color-border-primary: #266F8D;
+  border-radius: 32px;
+  color: #266F8D !important;
+  color: var(--kui-color-text-primary) !important;
+  border-color: #266F8D !important;
+  border-color: var(--kui-color-border-primary) !important;
+}
+
+@media only screen and (max-width: 600px) {
+  .page-hero-title {
+    font-size: 36px !important;
+    line-height: 46px !important;
+  }
+}
