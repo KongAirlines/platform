@@ -39,6 +39,23 @@ The branding is taken from the KongAir public Portal export. Each Portal keeps
 its own customization reference and access settings. Navigation, pages, domains,
 and authentication are managed separately from the shared branding.
 
+## Portal pages and navigation
+
+Each Portal has a published root page (`/`), a searchable API catalog, an About
+page, and a Guides parent with nested getting-started, application-access, and
+environment guides. Development pages and snippets are private; production
+pages and snippets are public. API publication visibility and registration
+approvals remain independent.
+
+Edit the shared Markdown Components content in
+[`konnect/portal/pages/`](konnect/portal/pages/), guide sidebar snippets in
+[`konnect/portal/snippets/`](konnect/portal/snippets/), and header/footer links
+in [`konnect/portal/menu.json`](konnect/portal/menu.json). `foundations.yaml`
+declares each Portal's page hierarchy with unique resource references and
+environment-specific visibility. Child slugs are relative to their parent,
+so `getting-started` under `guides` resolves to `/guides/getting-started`.
+Content and navigation edits trigger the approved foundations workflow.
+
 ## Runtime authentication
 
 Flights and Destinations are public and require no credential. Bookings and
