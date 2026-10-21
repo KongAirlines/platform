@@ -146,6 +146,11 @@ portals:
     auto_approve_applications: false
     default_api_visibility: private
     default_page_visibility: private
+    assets: !file branding/assets.json
+    customization:
+      ref: kongairlines-development-branding
+      css: !file branding/portal.css
+      theme: !file branding/theme.json
     labels:
       environment: development
       owner: platform
@@ -160,6 +165,11 @@ portals:
     auto_approve_applications: false
     default_api_visibility: public
     default_page_visibility: public
+    assets: !file branding/assets.json
+    customization:
+      ref: kongairlines-production-branding
+      css: !file branding/portal.css
+      theme: !file branding/theme.json
     labels:
       environment: production
       owner: platform
