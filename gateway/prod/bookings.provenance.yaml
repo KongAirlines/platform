@@ -1,5 +1,5 @@
 source_repository: KongAirlines/bookings
-source_commit: 780ac195edd24531481379daf03b5861234dd9b1
+source_commit: 15c24dabff7544ba72fe00fce7bbe22268566fb0
 sha256: 53460c2a5922e9245e2a29506817df9f43637807c0055496be86a270cf63dd74
 deck_version: 1.65.2
-kongctl_version: 1.20.2
+kongctl_version: 1.21.0
