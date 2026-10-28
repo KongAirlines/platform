@@ -3,7 +3,7 @@ _info:
   select_tags:
   - env-prod
 services:
-- host: api.kong-air.com
+- host: services.internal.kong-air.com
   id: 2ba9f6b4-107e-514b-b5a6-a9c08a1a0d2c
   name: customer-information-prod
   path: /
@@ -32,8 +32,8 @@ services:
     - team-customer-data
     - owner-customer
     - scope-customer-information-prod
-  port: 443
-  protocol: https
+  port: 8083
+  protocol: http
   routes:
   - id: 8c945127-4031-5489-ad10-c3e64cb2f095
     methods:
