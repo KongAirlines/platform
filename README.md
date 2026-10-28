@@ -27,6 +27,15 @@ updates, and deletions. Konnect resources are isolated by the `platform`
 namespace, while decK select tags scope Gateway deletion to the aggregate or
 shared configuration owned by this repository.
 
+The complete production Gateway aggregate is one reconciliation unit. Every
+input file uses `env-prod` as its decK select tag; entity-level ownership tags
+remain available to identify the owning team or service. decK merges the input
+files and combines their select tags, so different selectors would change the
+scope of the entire operation. CI and the production workflow validate this
+contract. Preview and synchronize all files listed in
+[`konnect/production-gateway.yaml`](konnect/production-gateway.yaml) together.
+A single file is only part of this desired state and is not a standalone sync.
+
 ## Shared Portal branding
 
 Both Portals reference the same files in [`konnect/branding/`](konnect/branding/)

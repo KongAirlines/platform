@@ -35,6 +35,7 @@ jobs:
         env:
           KONGCTL_DEFAULT_KONNECT_PAT: ${{ secrets.KONNECT_TOKEN }}
         run: |
+          ruby scripts/validate-production-gateway-scope.rb
           # kongctl currently drops file-level namespace defaults when all
           # parent resources are _external, so enforcement rejects this
           # otherwise valid _deck-only plan.

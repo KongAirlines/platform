@@ -9,6 +9,7 @@ control_planes:
         matchFields:
           name: kongairlines-prod
     _deck:
+      # These files form one reconciliation unit with the same env-prod selector.
       files:
         - ../gateway/prod/ace.yaml
         - ../gateway/prod/jwt-consumers.yaml
