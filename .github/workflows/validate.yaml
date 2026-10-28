@@ -40,9 +40,9 @@ jobs:
             gateway/prod/customer-information.yaml \
             gateway/prod/destinations.yaml \
             gateway/prod/flights.yaml \
-            --output-file "${RUNNER_TEMP}/kongairlines-production-gateway"
+            --output-file "${RUNNER_TEMP}/kongairlines-production-gateway.json"
           ruby scripts/validate-production-gateway-scope.rb \
-            "${RUNNER_TEMP}/kongairlines-production-gateway"
+            "${RUNNER_TEMP}/kongairlines-production-gateway.json"
       - name: Validate ownership and provenance
         run: ./scripts/validate-reference-platform.sh
       - name: Validate automation and authentication helpers
