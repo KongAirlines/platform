@@ -15,6 +15,9 @@ validate_entities = lambda do |state, label|
   walk = lambda do |parent|
     entity_fields.each do |field|
       parent.fetch(field, []).each do |entity|
+        if field == 'jwt_secrets' || (field == 'plugins' && entity['name'] == 'jwt')
+          raise "#{label}: JWT authentication is not part of the Portal application-key model"
+        end
         unless expected_tags.all? { |tag| entity.fetch('tags', []).include?(tag) }
           raise "#{label}: #{field} entity is missing the production reconciliation tag"
         end
@@ -42,7 +45,8 @@ unless ARGV.empty?
   rendered = JSON.parse(File.read(ARGV.fetch(0)))
   validate_entities.call(rendered, 'rendered production aggregate')
   ace = rendered.fetch('plugins').select { |plugin| plugin.fetch('name') == 'ace' }
-  unless ace.size == 1 && ace.first.fetch('config').fetch('anonymous') == 'kongairlines-anonymous'
+  unless ace.size == 1 && ace.first.fetch('config').fetch('anonymous') == 'kongairlines-anonymous' &&
+      ace.first.fetch('config').fetch('match_policy') == 'required'
     raise 'Rendered production aggregate must preserve the ACE anonymous fallback'
   end
 end

@@ -54,9 +54,6 @@ jobs:
         run: |
           current_sha="$(git rev-parse HEAD)"
           short_sha="$(git rev-parse --short HEAD)"
-          gateway_diff="${RUNNER_TEMP}/production-gateway.diff"
-          git diff --no-ext-diff --unified=3 "${BASE_SHA}...${current_sha}" -- \
-            gateway/prod/ > "${gateway_diff}"
           {
             echo '<!-- reference-platform-desired-state-review -->'
             echo '## Platform desired-state review'
@@ -70,21 +67,32 @@ jobs:
               gateway/ konnect/ scripts/ .github/workflows/
             echo '```'
             echo
-            echo '<details><summary>Production Gateway diff</summary>'
-            echo
-            echo '```diff'
-            if [[ -s "${gateway_diff}" ]]; then
-              head -c 45000 "${gateway_diff}"
-              echo
-              if [[ "$(wc -c < "${gateway_diff}")" -gt 45000 ]]; then
-                echo '... diff truncated after 45 KB; review Files changed for the complete artifacts.'
+            for stage in dev prod; do
+              gateway_diff="${RUNNER_TEMP}/${stage}-gateway.diff"
+              git diff --no-ext-diff --unified=3 "${BASE_SHA}...${current_sha}" -- \
+                "gateway/${stage}/" > "${gateway_diff}"
+              if [[ "${stage}" == dev ]]; then
+                label=Development
+              else
+                label=Production
               fi
-            else
-              echo '# No production Gateway changes.'
-            fi
-            echo '```'
-            echo
-            echo '</details>'
+              echo "<details><summary>${label} Gateway diff</summary>"
+              echo
+              echo '```diff'
+              if [[ -s "${gateway_diff}" ]]; then
+                head -c 24000 "${gateway_diff}"
+                echo
+                if [[ "$(wc -c < "${gateway_diff}")" -gt 24000 ]]; then
+                  echo '... diff truncated after 24 KB; review Files changed for the complete artifacts.'
+                fi
+              else
+                echo "# No ${stage} Gateway changes."
+              fi
+              echo '```'
+              echo
+              echo '</details>'
+              echo
+            done
             echo
             echo "> This is the offline, reviewable desired-state diff. The credentialed post-merge workflow produces the live \`kongctl sync\` plan against Konnect."
             echo
