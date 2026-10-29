@@ -1,7 +1,8 @@
 _format_version: "3.0"
 _info:
   select_tags:
-    - scope-platform-ace-dev
+    - env-dev
+    - owner-platform
 consumers:
   - username: kongairlines-anonymous
     tags:

@@ -20,7 +20,8 @@ Start in [`konnect/`](konnect/) for the Platform Team's Konnect desired state
 and [`gateway/prod/`](gateway/prod/) for reviewed production Gateway artifacts.
 The workflows in [`.github/workflows/`](.github/workflows/) validate and synchronize
 that configuration. Successful PR validation maintains a reviewer-facing
-comment with the changed platform files and production Gateway diff.
+comment with the changed platform files and development and production Gateway
+diffs.
 
 The workflows use `kongctl sync` so reviewed desired state reconciles creates,
 updates, and deletions. Konnect resources are isolated by the `platform`
@@ -35,6 +36,13 @@ scope of the entire operation. CI and the production workflow validate this
 contract. Preview and synchronize all files listed in
 [`konnect/production-gateway.yaml`](konnect/production-gateway.yaml) together.
 A single file is only part of this desired state and is not a standalone sync.
+
+Development control planes use a smaller shared reconciliation unit:
+[`konnect/development-gateway.yaml`](konnect/development-gateway.yaml) selects
+resources tagged with both `env-dev` and `owner-platform`. This includes the
+shared anonymous Consumer and global ACE. Service repositories use their own
+ownership and select tags for Services, Routes, and service-level plugins.
+CI and the foundations workflow validate this boundary before synchronization.
 
 ## Shared Portal branding
 
@@ -92,11 +100,6 @@ Environment. Optional `KONGAIRLINES_SECOND_API_KEY` and
 and unapproved registrations. `KONGAIRLINES_ROTATED_API_KEY` checks that a new
 key for the first application preserves its account. A GitHub-hosted runner cannot reach a developer's
 localhost; use `scripts/verify-gateway-auth.sh` locally for that case.
-
-The legacy JWT Consumers remain only during the rolling migration so existing
-Gateway artifacts continue to function until both service promotions finish.
-Remove their manifests and `KONGAIRLINES_JWT_PRIVATE_KEY` environment secrets
-after that rollout. No new JWT credential provisioning is required.
 
 ## Production promotion
 

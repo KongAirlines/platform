@@ -24,18 +24,16 @@ jobs:
       - name: Validate promoted Gateway state
         run: |
           deck file validate gateway/dev/ace.yaml
-          deck file validate gateway/dev/jwt-consumers.yaml
           deck file validate gateway/prod/ace.yaml
-          deck file validate gateway/prod/jwt-consumers.yaml
           deck file validate gateway/prod/bookings.yaml
           deck file validate gateway/prod/customer-information.yaml
           deck file validate gateway/prod/destinations.yaml
           deck file validate gateway/prod/flights.yaml
       - name: Validate aggregate rendering
         run: |
+          ruby scripts/validate-development-gateway-scope.rb
           deck file render --format json \
             gateway/prod/ace.yaml \
-            gateway/prod/jwt-consumers.yaml \
             gateway/prod/bookings.yaml \
             gateway/prod/customer-information.yaml \
             gateway/prod/destinations.yaml \
@@ -45,9 +43,8 @@ jobs:
             "${RUNNER_TEMP}/kongairlines-production-gateway.json"
       - name: Validate ownership and provenance
         run: ./scripts/validate-reference-platform.sh
-      - name: Validate automation and authentication helpers
+      - name: Validate automation and Portal content
         run: |
           bash -n scripts/*.sh
-          node --check scripts/sign-example-jwt.js
           node scripts/validate-portal-branding.js
           ruby scripts/validate-portal-content.rb

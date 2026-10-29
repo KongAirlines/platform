@@ -12,7 +12,6 @@ control_planes:
       # These files form one reconciliation unit with the same env-prod selector.
       files:
         - ../gateway/prod/ace.yaml
-        - ../gateway/prod/jwt-consumers.yaml
         - ../gateway/prod/bookings.yaml
         - ../gateway/prod/customer-information.yaml
         - ../gateway/prod/destinations.yaml
