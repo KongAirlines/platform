@@ -73,6 +73,25 @@ environment-specific visibility. Child slugs are relative to their parent,
 so `getting-started` under `guides` resolves to `/guides/getting-started`.
 Content and navigation edits trigger the approved foundations workflow.
 
+## Production Portal custom domain
+
+The production Portal's `custom_domain` in
+[`konnect/foundations.yaml`](konnect/foundations.yaml) declares its public
+hostname and uses Konnect-managed TLS with HTTP domain verification. The
+approved foundations workflow reconciles this configuration.
+
+The hostname's public DNS CNAME must point to the Portal's generated
+`default_domain`. Konnect verifies that DNS configuration and provisions the
+certificate. If CAA records restrict certificate issuance, allow `pki.goog`
+while preserving issuers required by other services. Allow time for DNS and
+certificate provisioning before checking the custom URL.
+
+When moving a hostname between Portals, check its existing custom-domain
+assignment and release that assignment if required before provisioning the
+new one. Record the previous DNS target before changing the CNAME. See
+[Konnect custom domains](https://developer.konghq.com/dev-portal/custom-domains/)
+for DNS and certificate requirements.
+
 ## Runtime authentication
 
 Flights and Destinations are public and require no credential. Bookings and
