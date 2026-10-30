@@ -223,7 +223,7 @@ portals:
     default_page_visibility: public
     custom_domain:
       ref: production-portal-domain
-      hostname: portal.kong-air.com
+      hostname: dev.kong-air.com
       enabled: true
       ssl:
         domain_verification_method: http
