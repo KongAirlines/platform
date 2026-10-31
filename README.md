@@ -44,6 +44,13 @@ shared anonymous Consumer and global ACE. Service repositories use their own
 ownership and select tags for Services, Routes, and service-level plugins.
 CI and the foundations workflow validate this boundary before synchronization.
 
+## Configuration linting
+
+See [native lint policies](lint/README.md) for kongctl foundation checks, decK
+Gateway policies and their regression cases. CI retains schema validation,
+provenance checks, Portal content/asset validation and the independent Gateway
+deletion-scope guards.
+
 ## Shared Portal branding
 
 Both Portals reference the same files in [`konnect/branding/`](konnect/branding/)

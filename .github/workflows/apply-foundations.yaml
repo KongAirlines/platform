@@ -35,6 +35,10 @@ jobs:
         with:
           deck-version: "1.65.2"
           wrapper: false
+      - name: Lint shared manifests before synchronization
+        run: |
+          kongctl lint -f konnect/foundations.yaml -r lint/foundations.yaml --fail-severity error
+          deck file lint --analytics=false --state gateway/dev/ace.yaml lint/ace-dev.yaml
       - name: Restore service automation access
         env:
           KONGCTL_DEFAULT_KONNECT_PAT: ${{ secrets.KONNECT_TOKEN }}

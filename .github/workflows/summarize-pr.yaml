@@ -64,7 +64,7 @@ jobs:
             echo
             echo '```text'
             git diff --name-status "${BASE_SHA}...${current_sha}" -- \
-              gateway/ konnect/ scripts/ .github/workflows/
+              gateway/ konnect/ lint/ scripts/ .github/workflows/
             echo '```'
             echo
             for stage in dev prod; do

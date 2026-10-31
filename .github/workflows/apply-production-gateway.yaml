@@ -31,6 +31,12 @@ jobs:
         with:
           deck-version: "1.65.2"
           wrapper: false
+      - name: Lint production Gateway inputs before synchronization
+        run: |
+          deck file lint --analytics=false --state gateway/prod/ace.yaml lint/ace-prod.yaml
+          for artifact in bookings customer-information destinations flights; do
+            deck file lint --analytics=false --state "gateway/prod/${artifact}.yaml" lint/promoted-gateway.yaml
+          done
       - name: Sync aggregate production Gateway state
         env:
           KONGCTL_DEFAULT_KONNECT_PAT: ${{ secrets.KONNECT_TOKEN }}

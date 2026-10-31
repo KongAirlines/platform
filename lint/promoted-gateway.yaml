@@ -1,0 +1,54 @@
+---
+rules:
+  promoted-no-global-plugins:
+    description: 'promoted-no-global-plugins: global plugins belong to platform state'
+    severity: error
+    given: "$"
+    then:
+      function: schema
+      functionOptions:
+        forceValidationOnCurrentNode: true
+        schema:
+          not:
+            required:
+            - plugins
+  promoted-selector:
+    description: 'promoted-selector: aggregate production reconciliation selects env-prod'
+    severity: error
+    given: "$"
+    then:
+      function: schema
+      functionOptions:
+        forceValidationOnCurrentNode: true
+        schema:
+          type: object
+          required:
+          - _info
+          properties:
+            _info:
+              type: object
+              required:
+              - select_tags
+              properties:
+                select_tags:
+                  const:
+                  - env-prod
+  promoted-no-retired-auth:
+    description: 'promoted-no-retired-auth: service artifacts cannot install ACE or
+      JWT'
+    severity: error
+    given: "$..plugins[*]"
+    then:
+      function: schema
+      functionOptions:
+        forceValidationOnCurrentNode: true
+        schema:
+          type: object
+          required:
+          - name
+          properties:
+            name:
+              not:
+                enum:
+                - ace
+                - jwt
