@@ -1,0 +1,167 @@
+[
+{
+  "tool": "deck",
+  "rules": "lint/ace-dev.yaml",
+  "document": {
+    "_format_version": "3.0",
+    "_info": {
+      "select_tags": [
+        "env-dev",
+        "owner-platform"
+      ]
+    },
+    "consumers": [
+      {
+        "username": "kongairlines-anonymous",
+        "tags": [
+          "env-dev",
+          "owner-platform",
+          "scope-platform-ace-dev"
+        ]
+      }
+    ],
+    "plugins": [
+      {
+        "name": "ace",
+        "config": {
+          "match_policy": "required",
+          "anonymous": "kongairlines-anonymous"
+        },
+        "tags": [
+          "env-dev",
+          "owner-platform",
+          "scope-platform-ace-dev"
+        ]
+      }
+    ]
+  },
+  "cases": [
+    {"name": "missing anonymous", "rule": "platform-ace", "changes": [{"path": ["plugins", 0, "config", "anonymous"], "delete": true}]},
+    {"name": "wrong match policy", "rule": "platform-ace", "changes": [{"path": ["plugins", 0, "config", "match_policy"], "value": "if_present"}]},
+    {"name": "missing tags", "rule": "platform-ace", "changes": [{"path": ["consumers", 0, "tags"], "delete": true}]},
+    {"name": "wrong selector", "rule": "platform-ace", "changes": [{"path": ["_info", "select_tags"], "value": ["unexpected"]}]},
+    {"name": "service in shared state", "rule": "platform-ace", "changes": [{"path": ["services"], "value": []}]},
+    {"name": "credentials on anonymous", "rule": "platform-ace", "changes": [{"path": ["consumers", 0, "keyauth_credentials"], "value": [{"key": "test"}]}]},
+    {"name": "second global ACE", "rule": "platform-ace", "changes": [{"path": ["plugins"], "value": [{"name": "ace", "config": {"match_policy": "required", "anonymous": "kongairlines-anonymous"}, "tags": ["env-dev", "owner-platform", "scope-platform-ace-dev"]}, {"name": "ace", "config": {"match_policy": "required", "anonymous": "kongairlines-anonymous"}, "tags": ["env-dev", "owner-platform", "scope-platform-ace-dev"]}]}]}
+  ]
+},
+{
+  "tool": "deck",
+  "rules": "lint/ace-prod.yaml",
+  "document": {
+    "_format_version": "3.0",
+    "_info": {
+      "select_tags": [
+        "env-prod"
+      ]
+    },
+    "consumers": [
+      {
+        "username": "kongairlines-anonymous",
+        "tags": [
+          "env-prod",
+          "owner-platform",
+          "scope-platform-ace-prod"
+        ]
+      }
+    ],
+    "plugins": [
+      {
+        "name": "ace",
+        "config": {
+          "match_policy": "required",
+          "anonymous": "kongairlines-anonymous"
+        },
+        "tags": [
+          "env-prod",
+          "owner-platform",
+          "scope-platform-ace-prod"
+        ]
+      }
+    ]
+  },
+  "cases": [
+    {"name": "missing anonymous", "rule": "platform-ace", "changes": [{"path": ["plugins", 0, "config", "anonymous"], "delete": true}]},
+    {"name": "wrong match policy", "rule": "platform-ace", "changes": [{"path": ["plugins", 0, "config", "match_policy"], "value": "if_present"}]},
+    {"name": "missing tags", "rule": "platform-ace", "changes": [{"path": ["consumers", 0, "tags"], "delete": true}]},
+    {"name": "wrong selector", "rule": "platform-ace", "changes": [{"path": ["_info", "select_tags"], "value": ["unexpected"]}]},
+    {"name": "service in shared state", "rule": "platform-ace", "changes": [{"path": ["services"], "value": []}]},
+    {"name": "credentials on anonymous", "rule": "platform-ace", "changes": [{"path": ["consumers", 0, "keyauth_credentials"], "value": [{"key": "test"}]}]},
+    {"name": "second global ACE", "rule": "platform-ace", "changes": [{"path": ["plugins"], "value": [{"name": "ace", "config": {"match_policy": "required", "anonymous": "kongairlines-anonymous"}, "tags": ["env-prod", "owner-platform", "scope-platform-ace-prod"]}, {"name": "ace", "config": {"match_policy": "required", "anonymous": "kongairlines-anonymous"}, "tags": ["env-prod", "owner-platform", "scope-platform-ace-prod"]}]}]}
+  ]
+},
+{
+  "tool": "deck",
+  "rules": "lint/promoted-gateway.yaml",
+  "document": {
+    "_info": {
+      "select_tags": [
+        "env-prod"
+      ]
+    },
+    "services": [
+      {
+        "plugins": [
+          {
+            "name": "post-function"
+          }
+        ]
+      }
+    ]
+  },
+  "cases": [
+    {"name": "global plugin", "rule": "promoted-no-global-plugins", "changes": [{"path": ["plugins"], "value": []}]},
+    {"name": "missing selector", "rule": "promoted-selector", "changes": [{"path": ["_info"], "delete": true}]},
+    {"name": "service ACE", "rule": "promoted-no-retired-auth", "changes": [{"path": ["services", 0, "plugins", 0, "name"], "value": "ace"}]},
+    {"name": "service JWT", "rule": "promoted-no-retired-auth", "changes": [{"path": ["services", 0, "plugins", 0, "name"], "value": "jwt"}]}
+  ]
+},
+{
+  "tool": "kongctl",
+  "rules": "lint/foundations.yaml",
+  "document": {
+    "application_auth_strategies": [
+      {
+        "name": "kongairlines-key-auth-dev",
+        "strategy_type": "key_auth",
+        "configs": {
+          "key_auth": {
+            "key_names": [
+              "X-API-Key"
+            ]
+          }
+        }
+      },
+      {
+        "name": "kongairlines-key-auth-prod",
+        "strategy_type": "key_auth",
+        "configs": {
+          "key_auth": {
+            "key_names": [
+              "X-API-Key"
+            ]
+          }
+        }
+      }
+    ],
+    "portals": [
+      {
+        "authentication_enabled": true,
+        "auto_approve_developers": false,
+        "auto_approve_applications": false
+      },
+      {
+        "authentication_enabled": true,
+        "auto_approve_developers": false,
+        "auto_approve_applications": false
+      }
+    ]
+  },
+  "cases": [
+    {"name": "missing prod strategy", "rule": "platform-foundations", "changes": [{"path": ["application_auth_strategies"], "value": [{"name": "kongairlines-key-auth-dev", "strategy_type": "key_auth", "configs": {"key_auth": {"key_names": ["X-API-Key"]}}}]}]},
+    {"name": "wrong credential header", "rule": "platform-foundations", "changes": [{"path": ["application_auth_strategies", 0, "configs", "key_auth", "key_names"], "value": ["wrong"]}]},
+    {"name": "public developer auto-approval", "rule": "platform-foundations", "changes": [{"path": ["portals", 1, "auto_approve_developers"], "value": true}]},
+    {"name": "missing authentication", "rule": "platform-foundations", "changes": [{"path": ["portals", 0, "authentication_enabled"], "delete": true}]}
+  ]
+}
+]

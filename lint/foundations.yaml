@@ -1,0 +1,71 @@
+---
+rules:
+  platform-foundations:
+    description: 'platform-foundations: platform Key Auth strategies and approved
+      Portal access'
+    severity: error
+    given: "$"
+    then:
+      function: schema
+      functionOptions:
+        forceValidationOnCurrentNode: true
+        schema:
+          type: object
+          required:
+          - application_auth_strategies
+          - portals
+          properties:
+            application_auth_strategies:
+              type: array
+              allOf:
+              - contains:
+                  type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: kongairlines-key-auth-dev
+              - contains:
+                  type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      const: kongairlines-key-auth-prod
+              items:
+                type: object
+                required:
+                - strategy_type
+                - configs
+                properties:
+                  strategy_type:
+                    const: key_auth
+                  configs:
+                    type: object
+                    required:
+                    - key_auth
+                    properties:
+                      key_auth:
+                        type: object
+                        required:
+                        - key_names
+                        properties:
+                          key_names:
+                            const:
+                            - X-API-Key
+            portals:
+              type: array
+              items:
+                type: object
+                required:
+                - authentication_enabled
+                - auto_approve_developers
+                - auto_approve_applications
+                properties:
+                  authentication_enabled:
+                    const: true
+                  auto_approve_developers:
+                    const: false
+                  auto_approve_applications:
+                    const: false
+              minItems: 2

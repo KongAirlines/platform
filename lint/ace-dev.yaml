@@ -1,0 +1,86 @@
+---
+rules:
+  platform-ace:
+    description: 'platform-ace: only platform ACE and its anonymous Consumer within
+      the source selector'
+    severity: error
+    given: "$"
+    then:
+      function: schema
+      functionOptions:
+        forceValidationOnCurrentNode: true
+        schema:
+          type: object
+          required:
+          - _format_version
+          - _info
+          - consumers
+          - plugins
+          properties:
+            _format_version:
+              const: '3.0'
+            _info:
+              type: object
+              required:
+              - select_tags
+              properties:
+                select_tags:
+                  const:
+                  - env-dev
+                  - owner-platform
+            consumers:
+              type: array
+              items:
+                type: object
+                required:
+                - username
+                - tags
+                properties:
+                  username:
+                    const: kongairlines-anonymous
+                  tags:
+                    type: array
+                    allOf:
+                    - contains:
+                        const: env-dev
+                    - contains:
+                        const: owner-platform
+                    - contains:
+                        const: scope-platform-ace-dev
+                additionalProperties: false
+              minItems: 1
+              maxItems: 1
+            plugins:
+              type: array
+              items:
+                type: object
+                required:
+                - name
+                - config
+                - tags
+                properties:
+                  name:
+                    const: ace
+                  config:
+                    type: object
+                    required:
+                    - match_policy
+                    - anonymous
+                    properties:
+                      match_policy:
+                        const: required
+                      anonymous:
+                        const: kongairlines-anonymous
+                  tags:
+                    type: array
+                    allOf:
+                    - contains:
+                        const: env-dev
+                    - contains:
+                        const: owner-platform
+                    - contains:
+                        const: scope-platform-ace-dev
+                additionalProperties: false
+              minItems: 1
+              maxItems: 1
+          additionalProperties: false
